@@ -1,0 +1,70 @@
+#mychart{
+	width: 100%;
+	border: 1px solid red !important;
+}
+.loading_container{
+	background: rgba(230,230,230,0.7);
+	width: 80%;
+	position: absolute;
+	z-index: 99;
+	height: 100%;
+}
+.border{
+	border: 1px solid #dadada;
+	margin:0px 18px;
+}
+.info_customer{
+	border: 1px solid #dadada;
+	padding: 10px;
+}
+.layout_transaksi{
+	margin:10px;
+}
+.layout_item{
+	border: 1px solid #dadada;
+	padding: 4px;
+	min-height: 500px;
+	float: left;
+}
+.layout_checkout{
+	border: 1px solid #dadada;
+	padding: 4px;
+	min-height: 500px;
+}
+.header_transaksi{
+	padding: 4px;
+	height: 40px;
+	background: #30426A;
+	text-align: center;
+	color: #fff;
+	float: left;
+	width: 100%;
+}
+.item_product{
+	padding: 4px;
+	height: auto;
+	border: 1px solid #30426A;
+	margin:10px;
+	width: 30%;
+	float: left;
+	text-align: center;
+}
+
+
+
+.item_image{
+	width: 100%;
+	float: left;
+}
+.item_desc{
+	float:left;
+	width: 100%;
+	background: #637db7;
+	height: 60px;
+	color: #fff;
+}
+
+
+.body_transaksi{
+	padding:8px;
+}
