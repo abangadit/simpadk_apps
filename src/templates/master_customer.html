@@ -1,0 +1,50 @@
+<div class="row" ng-controller="CustomerCtrl">
+  <div class="col-lg-12">
+    <rd-widget>
+      <rd-widget-header icon="fa-tasks" title="Data Merk">
+        <a href="#">Tambah Data</a>
+      </rd-widget-header>
+      <rd-widget-body classes=" no-padding">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="text-center">ID</th>
+                <th>name</th>
+                <th>address</th>
+                <th>phone no</th>
+                <th>remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="customer in data_customer">
+                <td class="text-center">{{customer.customer_id}}</td>
+                <td>{{customer.name}}</td>
+                <td>{{customer.phone_no}}</td>
+                <td>{{customer.remarks}}</td>
+                <td>
+                  <a ng-click="priceCustomer(customer.customer_id)">Harga</a> |
+                  <a ng-click="detailCustomer(customer.customer_id)">Detail</a> |
+                  <a ng-click="detailCustomer(customer.customer_id)">Delete</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>      
+      </rd-widget-body>
+      <rd-widget-footer>
+        <ul class="pagination pagination-sm pull-right">
+          <li><a href="#">&laquo;</a></li>
+          <li><a href="#">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+          <li><a href="#">5</a></li>
+          <li><a href="#">&raquo;</a></li>
+        </ul>
+        <div class="clearfix"></div>
+      </rd-widget-footer>
+    </rd-widget>
+  </div>
+  
+</div>

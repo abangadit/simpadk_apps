@@ -1,0 +1,46 @@
+<div class="row" ng-controller="UserCtrl">
+  <div class="col-lg-12">
+    <rd-widget>
+      <rd-widget-header icon="fa-tasks" title="Data Merk">
+        <a href="#">Tambah Data</a>
+      </rd-widget-header>
+      <rd-widget-body classes=" no-padding">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="text-center">ID</th>
+                <th>username</th>
+                <th>user level</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="user in data_user">
+                <td class="text-center">{{user.user_id}}</td>
+                <td>{{user.user_name}}</td>
+                <td>{{user.user_level}}</td>
+                <td>
+                  <a ng-click="detailUser(user.user_id)">Detail</a> |
+                  <a ng-click="detailUser(user.user_id)">Delete</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>      
+      </rd-widget-body>
+      <rd-widget-footer>
+        <ul class="pagination pagination-sm pull-right">
+          <li><a href="#">&laquo;</a></li>
+          <li><a href="#">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+          <li><a href="#">5</a></li>
+          <li><a href="#">&raquo;</a></li>
+        </ul>
+        <div class="clearfix"></div>
+      </rd-widget-footer>
+    </rd-widget>
+  </div>
+  
+</div>

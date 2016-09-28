@@ -1,0 +1,25 @@
+<div class="row" ng-controller="UserDetailCtrl">
+  <div class="col-lg-12">
+    <rd-widget>
+      <rd-widget-body classes=" padding">
+        <div>
+          <form ng-repeat="user in data_user_detail">
+            <div class="form-group">
+              <label>Nama</label>
+              <input type="text" class="form-control" ng-value="user.user_name">
+            </div>
+            <div class="form-group">
+              <label >Password</label>
+              <input type="text" class="form-control" ng-value="user.password">
+            </div>
+            <div class="form-group">
+              <label >User Level</label>
+              <input type="text" class="form-control" ng-value="user.user_level">
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">Update</button>
+          </form>
+      </rd-widget-body>
+    </rd-widget>
+  </div>
+  
+</div>

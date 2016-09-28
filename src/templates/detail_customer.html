@@ -1,0 +1,29 @@
+<div class="row" ng-controller="CustomerDetailCtrl">
+  <div class="col-lg-12">
+    <rd-widget>
+      <rd-widget-body classes=" padding">
+        <div>
+          <form ng-repeat="customer in data_customer_detail">
+            <div class="form-group">
+              <label>Nama</label>
+              <input type="text" class="form-control" ng-value="customer.name">
+            </div>
+            <div class="form-group">
+              <label >Alamat</label>
+              <input type="text" class="form-control" ng-value="customer.address">
+            </div>
+            <div class="form-group">
+              <label >No Telp</label>
+              <input type="text" class="form-control" ng-value="customer.phone_no">
+            </div>
+            <div class="form-group">
+              <label >Remarks</label>
+              <input type="text" class="form-control" ng-value="customer.remarks">
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">Update</button>
+          </form>
+      </rd-widget-body>
+    </rd-widget>
+  </div>
+  
+</div>
