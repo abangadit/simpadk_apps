@@ -4,30 +4,39 @@
       <rd-widget-header icon="fa-tasks" title="Transaksi">
       </rd-widget-header>
       <rd-widget-body classes="">
-      <button type="button" class="btn btn-primary">Pilih Customer</button>
+      <button type="button" class="btn btn-primary" ng-click="pilih_customer()">Pilih Customer</button>
         <div class="row layout_transaksi">
           <div class="col-md-9 layout_item">
             <div class="header_transaksi"> Item </div>
-              <div class="item_product" ng-repeat="data in data_product" ng-click="order_popup('sm',data.product_id,data.product_nama)">
+              <div class="item_product" ng-repeat="data in data_product" ng-click="order_popup('sm',data.product_id,data.product_nama,data.default_price)">
                 <div class="item_desc">
                   {{data.merk_nama}}<br>
                   {{data.product_nama}}<br>
-                  Rp.100.000
+                  {{data.default_price | currency:"Rp.":0}}
                 </div>
               </div>
           </div>
           <div class="col-md-3 layout_checkout">
             <div class="header_transaksi"> Keranjang </div>
             <div class="body_transaksi">
-              <div style="text-align: center;width:100%;">Customer</div>
-              Nama : <br>
-              Alamat : <br>
-              No Telp : <br>
+              <div style="text-align: center;width:100%;border-bottom: 1px solid #dadada;"><h4>Customer</h4></div>
+              Nama : {{nama_customer}}<br>
+              Alamat : {{alamat_customer}}<br>
+              No Telp : {{telp_customer}}<br>
+              Total : {{total | currency:"Rp.":0}}<br>
               <hr>
-              <div style="width:100%;">
-                <div ng-repeat="item in cart">{{item.name}} qty : {{item.qty}}</div>
+              <div class="row" ng-repeat="item in cart">
+                <div class="col-md-12">
+                  <div class="col-md-10" style="border-bottom: 1px solid #dadada;padding:5px 0px;font-size:11px;color:#000;">{{item.name}} ( {{item.qty}} ) {{item.price | currency:"Rp.":0}}
+                  </div>
+                  <div class="col-md-2" style="font-size:14px;color:#ff0000;">x</div>
+                </div>
               </div>
             </div>
+          </div>
+          <div class=" col-md-3" align="center" style="float:right;">
+            <button class="btn btn-success" ng-click="checkout()"> Checkout </button>
+            <button class="btn btn-danger" ng-click="emptyCart()"> Kosongkan </button>
           </div>
         </div>
 

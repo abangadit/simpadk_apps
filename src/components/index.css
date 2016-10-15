@@ -30,6 +30,14 @@
 	border: 1px solid #dadada;
 	padding: 4px;
 	min-height: 500px;
+	height: auto;
+}
+.action_checkout{
+	border: 1px solid #dadada;
+	padding: 4px;
+	width: 100%;
+}.item_cart{
+	border-bottom: 1px solid #dadada;
 }
 .header_transaksi{
 	padding: 4px;
