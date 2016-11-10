@@ -2,7 +2,7 @@
  * Master Controller
  */
 var base_url = "http://localhost:3000/";
-var api_key = "d19ea5b21a429e672e9affa04617b92c741c"; //api key sementara (belum ada login)
+var api_key = "d19ea5b21a429e672e9affa04210b72e7117"; //api key sementara (belum ada login)
 
 angular.module('RDash')
     .controller('MasterCtrl', ['$rootScope','$scope', '$cookieStore', '$http', MasterCtrl]);
