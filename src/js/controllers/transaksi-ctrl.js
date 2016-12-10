@@ -129,6 +129,7 @@
   	        	// 	$rootScope.isLoading = false;
   		        // }, 1000);
   		        // alert("Pesanan Berhasil Dibuat");
+              productService.order_id = response.data[0].insert_id;
   		        console.log(response.data[0].insert_id);
               insert_order_item(response.data[0].insert_id);
 
@@ -179,11 +180,58 @@
         if($scope.order_count==$scope.cart.length){
           $timeout( function(){
             $rootScope.isLoading = false;
+            alert("Order Berhasil Dibuat");
+            open_popup_transaksi('lg');
           }, 1000);
         }
 
       }
 
+      function open_popup_transaksi (size){
+        $rootScope.modalInstance = $uibModal.open({
+  	        templateUrl: 'templates/modal_print.html',
+  	        size: size,
+  	        resolve: {
+  	            items: function () {
+  	                return $scope.items;
+  	            }
+  	        }
+  	    });
+
+  	    $rootScope.modalInstance.result.then(function (selectedItem) {
+  	        $scope.selected = selectedItem;
+
+            $scope.total += selectedItem;
+  	    }, function () {
+  	        //$log.info('Modal dismissed at: ' + new Date());
+  	    });
+      }
+
+  	}])
+  	.controller('TransaksiPrintCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {
+      $scope.order_id = productService.order_id;
+      $scope.order_id = 17;
+      //alert($scope.order_id);
+      $rootScope.isLoading = true;
+  		$http.get(base_url+"api/"+api_key+"/orders/"+$scope.order_id)
+  		.then(function(response) {
+        $http.get(base_url+"api/"+api_key+"/orderitems/"+$scope.order_id)
+    		.then(function(response) {
+    			$scope.data_order_item = response.data;
+          $timeout( function(){
+        		$rootScope.isLoading = false;
+          }, 1000);
+    		});
+  			$scope.data_order = response.data;
+  		});
+
+      $scope.print = function(){
+        var printContents = document.getElementById("print_nota").innerHTML;
+        var popupWin = window.open('', '_blank', 'width=300,height=300');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /></head><body onload="window.print()">' + printContents + '</body></html>');
+        popupWin.document.close();
+      }
 
   	}])
   	.controller('ModalCustomerCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {

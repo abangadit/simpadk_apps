@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:8889
--- Generation Time: Nov 10, 2016 at 06:15 AM
+-- Generation Time: Dec 10, 2016 at 07:39 PM
 -- Server version: 5.5.42
 -- PHP Version: 5.6.7
 
@@ -332,7 +332,7 @@ end if;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_od_vieworderlist`(order_id int, customer_id int, page_no int, row_ct int, isactive bit)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_od_vieworderlist`(IN `order_id` INT, IN `page_no` INT, IN `row_ct` INT, IN `isactive` BIT)
 BEGIN
 declare start_no int;
 
@@ -347,6 +347,8 @@ SELECT od.`order_id`,
     us.user_name,
     od.`customer_id`,
     cs.name,
+    cs.address,
+    cs.phone_no,
     od.`total`,
     od.`discount`,
     od.`grand_total`,
@@ -354,11 +356,12 @@ SELECT od.`order_id`,
     od.`isdelivered`,
     od.`remarks`
 FROM `order`od
+
 	INNER JOIN user us ON us.user_id=od.user_id
-    INNER JOIN customer cs ON cs.customer_id=od.customer_id
+    LEFT JOIN customer cs ON cs.customer_id=od.customer_id
 
 	WHERE (od.order_id=order_id or order_id=0 OR order_id is null)
-	AND (od.customer_id=customer_id or customer_id=0 OR customer_id is null)
+
 	LIMIT start_no,row_ct;
 else
 	SELECT od.`order_id`,
@@ -367,6 +370,8 @@ else
     us.user_name,
     od.`customer_id`,
     cs.name,
+    cs.address,
+    cs.phone_no,
     od.`total`,
     od.`discount`,
     od.`grand_total`,
@@ -375,10 +380,10 @@ else
     od.`remarks`
 FROM `order`od
 	INNER JOIN user us ON us.user_id=od.user_id
-    INNER JOIN customer cs ON cs.customer_id=od.customer_id
+    LEFT JOIN customer cs ON cs.customer_id=od.customer_id
 
 	WHERE (od.order_id=order_id or order_id=0 OR order_id is null)
-	AND (od.customer_id=customer_id or customer_id=0 OR customer_id is null);
+;
 end if;
 END$$
 
@@ -389,20 +394,12 @@ BEGIN
     select 'successfully delete record' as result;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_oi_saveorderitem`(
-order_item_id INT,
-order_id INT,
-product_id INT,
-customer_price_id INT,
-customer_price FLOAT,
-quantity INT,
-subtotal FLOAT
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_oi_saveorderitem`(IN `order_item_id` INT, IN `order_id` INT, IN `product_id` INT, IN `customer_price_id` INT, IN `customer_price` FLOAT, IN `quantity` INT, IN `subtotal` FLOAT)
 BEGIN
-if customer_id=0 then
+if order_item_id=0 then
 
 	INSERT INTO `order_item`
-(`order_item_id`,
+(
 `order_id`,
 `product_id`,
 `customer_price_id`,
@@ -410,7 +407,7 @@ if customer_id=0 then
 `quantity`,
 `subtotal`)
 VALUES
-(order_item_id,
+(
 order_id,
 product_id,
 customer_price_id,
@@ -440,7 +437,7 @@ end if;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_oi_vieworderitemlist`(order_id int, page_no int, row_ct int, isactive bit)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_oi_vieworderitemlist`(IN `order_id` INT, IN `page_no` INT, IN `row_ct` INT, IN `isactive` BIT)
 BEGIN
 declare start_no int;
 
@@ -462,7 +459,7 @@ SELECT
 FROM `order_item` oi
 	INNER JOIN product pr ON pr.product_id=oi.product_id
     INNER JOIN satuan st ON st.satuan_id=pr.satuan_id
-	WHERE  (od.order_id=order_id or order_id=0 OR order_id is null)
+	WHERE  (oi.order_id=order_id or order_id=0 OR order_id is null)
 	LIMIT start_no,row_ct;
 else
 	SELECT
@@ -478,7 +475,7 @@ else
 FROM `order_item` oi
 	INNER JOIN product pr ON pr.product_id=oi.product_id
     INNER JOIN satuan st ON st.satuan_id=pr.satuan_id
-	WHERE  (od.order_id=order_id or order_id=0 OR order_id is null);
+	WHERE  (oi.order_id=order_id or order_id=0 OR order_id is null);
 end if;
 END$$
 
@@ -780,7 +777,7 @@ CREATE TABLE `apikey` (
 --
 
 INSERT INTO `apikey` (`user_id`, `apikey`, `user_level`, `expired_date`) VALUES
-(8, 'd19ea5b21a429e672e9affa04210b72e7117', 1, '2016-10-22 17:02:09');
+(8, 'd19ea5b21a429e672e92f8a14610bb227d1c', 1, '2016-12-11 03:38:23');
 
 -- --------------------------------------------------------
 
@@ -869,7 +866,7 @@ CREATE TABLE `order` (
   `delivery_date` datetime NOT NULL,
   `isdelivered` bit(1) NOT NULL,
   `remarks` text NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `order`
@@ -881,7 +878,25 @@ INSERT INTO `order` (`order_id`, `order_date`, `user_id`, `customer_id`, `total`
 (4, '0000-00-00 00:00:00', 1, 0, 1230000, 0, 1230000, '0000-00-00 00:00:00', b'0', ''),
 (5, '0000-00-00 00:00:00', 1, 0, 160000, 0, 160000, '0000-00-00 00:00:00', b'0', ''),
 (6, '0000-00-00 00:00:00', 1, 0, 160000, 0, 160000, '0000-00-00 00:00:00', b'0', ''),
-(7, '0000-00-00 00:00:00', 1, 0, 100000, 0, 100000, '0000-00-00 00:00:00', b'0', '');
+(7, '0000-00-00 00:00:00', 1, 0, 100000, 0, 100000, '0000-00-00 00:00:00', b'0', ''),
+(8, '0000-00-00 00:00:00', 1, 0, 140000, 0, 140000, '0000-00-00 00:00:00', b'0', ''),
+(9, '0000-00-00 00:00:00', 1, 0, 30000, 0, 30000, '0000-00-00 00:00:00', b'0', ''),
+(10, '0000-00-00 00:00:00', 1, 0, 70000, 0, 70000, '0000-00-00 00:00:00', b'0', ''),
+(11, '0000-00-00 00:00:00', 1, 0, 50000, 0, 50000, '0000-00-00 00:00:00', b'0', ''),
+(12, '0000-00-00 00:00:00', 1, 0, 10000, 0, 10000, '0000-00-00 00:00:00', b'0', ''),
+(13, '0000-00-00 00:00:00', 1, 0, 10000, 0, 10000, '0000-00-00 00:00:00', b'0', ''),
+(14, '0000-00-00 00:00:00', 1, 0, 10000, 0, 10000, '0000-00-00 00:00:00', b'0', ''),
+(15, '0000-00-00 00:00:00', 1, 0, 120000, 0, 120000, '0000-00-00 00:00:00', b'0', ''),
+(16, '0000-00-00 00:00:00', 1, 0, 140000, 0, 140000, '0000-00-00 00:00:00', b'0', ''),
+(17, '0000-00-00 00:00:00', 1, 0, 260000, 0, 260000, '0000-00-00 00:00:00', b'0', ''),
+(18, '0000-00-00 00:00:00', 1, 0, 50000, 0, 50000, '0000-00-00 00:00:00', b'0', ''),
+(19, '0000-00-00 00:00:00', 1, 0, 50000, 0, 50000, '0000-00-00 00:00:00', b'0', ''),
+(20, '0000-00-00 00:00:00', 1, 0, 50000, 0, 50000, '0000-00-00 00:00:00', b'0', ''),
+(21, '0000-00-00 00:00:00', 1, 0, 50000, 0, 50000, '0000-00-00 00:00:00', b'0', ''),
+(22, '0000-00-00 00:00:00', 1, 0, 50000, 0, 50000, '0000-00-00 00:00:00', b'0', ''),
+(23, '0000-00-00 00:00:00', 1, 0, 50000, 0, 50000, '0000-00-00 00:00:00', b'0', ''),
+(24, '0000-00-00 00:00:00', 1, 0, 100000, 0, 100000, '0000-00-00 00:00:00', b'0', ''),
+(25, '0000-00-00 00:00:00', 1, 0, 100000, 0, 100000, '0000-00-00 00:00:00', b'0', '');
 
 -- --------------------------------------------------------
 
@@ -897,7 +912,37 @@ CREATE TABLE `order_item` (
   `customer_price` float NOT NULL,
   `quantity` int(11) NOT NULL,
   `subtotal` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `order_item`
+--
+
+INSERT INTO `order_item` (`order_item_id`, `order_id`, `product_id`, `customer_price_id`, `customer_price`, `quantity`, `subtotal`) VALUES
+(1, 15, 14, 0, 120000, 12, 1440000),
+(2, 16, 14, 0, 120000, 12, 1440000),
+(3, 16, 14, 0, 20000, 2, 40000),
+(4, 17, 14, 0, 120000, 12, 1440000),
+(5, 17, 14, 0, 20000, 2, 40000),
+(6, 17, 15, 0, 120000, 12, 1440000),
+(7, 18, 1, 0, 30000, 3, 90000),
+(8, 18, 2, 0, 20000, 2, 40000),
+(9, 19, 1, 0, 30000, 3, 90000),
+(10, 19, 2, 0, 20000, 2, 40000),
+(11, 20, 1, 0, 30000, 3, 90000),
+(12, 20, 2, 0, 20000, 2, 40000),
+(13, 21, 1, 0, 30000, 3, 90000),
+(14, 21, 2, 0, 20000, 2, 40000),
+(15, 22, 1, 0, 30000, 3, 90000),
+(16, 22, 2, 0, 20000, 2, 40000),
+(17, 23, 1, 0, 20000, 2, 40000),
+(18, 23, 2, 0, 30000, 3, 90000),
+(19, 24, 1, 0, 20000, 2, 40000),
+(20, 24, 2, 0, 40000, 4, 160000),
+(21, 24, 4, 0, 40000, 4, 160000),
+(22, 25, 1, 0, 20000, 2, 40000),
+(23, 25, 2, 0, 40000, 4, 160000),
+(24, 25, 4, 0, 40000, 4, 160000);
 
 -- --------------------------------------------------------
 
@@ -1063,12 +1108,12 @@ ALTER TABLE `merk`
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT for table `order_item`
 --
 ALTER TABLE `order_item`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `product`
 --

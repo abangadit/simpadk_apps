@@ -23,6 +23,12 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 url: '/transaksi',
                 templateUrl: 'templates/transaksi.html'
             })
+            .state('transaksi_print', {
+                url: '/transaksi_print',
+                templateUrl: 'templates/modal_print.html'
+            })
+
+
             //PRODUCT//
             .state('master_product', {
                 url: '/master_product',
@@ -47,7 +53,7 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: 'templates/detail_merk.html'
             })
 
-            //MERK
+            //CUSTOMER
             .state('master_customer', {
                 url: '/master_customer',
                 templateUrl: 'templates/master_customer.html'
@@ -56,8 +62,12 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 url: '/detail_customer',
                 templateUrl: 'templates/detail_customer.html'
             })
+            .state('harga_customer', {
+                url: '/harga_customer',
+                templateUrl: 'templates/harga_customer.html'
+            })
 
-            //MERK
+            //SATUAN
             .state('master_satuan', {
                 url: '/master_satuan',
                 templateUrl: 'templates/master_satuan.html'
@@ -67,7 +77,7 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: 'templates/detail_satuan.html'
             })
 
-            //MERK
+            //USER
             .state('master_user', {
                 url: '/master_user',
                 templateUrl: 'templates/master_user.html'

@@ -1,0 +1,21 @@
+<div ng-controller="TransaksiPrintCtrl">
+    <div class="modal-header">
+    </div>
+    <div class="modal-body" id="modal-body">
+      <div class="body_transaksi" id="print_nota" ng-repeat="order in data_order">
+        <div style="text-align: center;width:100%;border-bottom: 1px solid #dadada;"><h4>Nota Transaksi</h4></div>
+        Nama : {{order.name}}<br>
+        Alamat : {{order.address}}<br>
+        No Telp : {{order.phone_no}}<br>
+        Total : {{order.total | currency:"Rp.":0}}<br>
+        <hr>
+        <div class="row" ng-repeat="item in data_order_item">
+          <div class="col-md-12" style="border-bottom: 1px solid #dadada;padding:5px 0px;font-size:11px;color:#000;">{{item.product_nama}} ( {{item.quantity}} ) {{item.customer_price | currency:"Rp.":0}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="print()">Print</button>
+    </div>
+</div>
