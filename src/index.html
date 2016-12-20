@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Aplikasi Air Minum</title>    
+	<title>Aplikasi Air Minum</title>
   <!-- STYLES -->
   <!-- build:css lib/css/main.min.css -->
   <link rel="stylesheet" type="text/css" href="components/bootstrap/dist/css/bootstrap.min.css">
@@ -24,16 +24,16 @@
 
   <!-- Custom Scripts -->
   <script type="text/javascript" src="js/dashboard.min.js"></script>
-</head> 
+</head>
 <body ng-controller="MasterCtrl">
 
-  
+
   <div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
     <div class="loading_container" ng-show="isLoading">
       <rd-loading></rd-loading>
     </div>
- 
-    <!-- Sidebar --> 
+
+    <!-- Sidebar -->
     <div id="sidebar-wrapper">
       <ul class="sidebar">
         <li class="sidebar-main">
@@ -48,6 +48,15 @@
         </li>
         <li class="sidebar-list">
           <a href="#/transaksi">Transaksi <span class="menu-icon fa fa-money"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a href="#/transaksi">Restock <span class="menu-icon fa fa-money"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a href="#/transaksi">Kas Masuk <span class="menu-icon fa fa-money"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a href="#/transaksi">Kas Keluar <span class="menu-icon fa fa-money"></span></a>
         </li>
         <li class="sidebar-list">
           <a href="#/tables">Laporan <span class="menu-icon fa fa-area-chart"></span></a>
@@ -70,7 +79,7 @@
         </li>
       </ul>
       <div class="sidebar-footer">
-        
+
       </div>
     </div>
     <!-- End Sidebar -->
@@ -127,7 +136,7 @@
                     <a href="#">Server Down!</a>
                   </li>
                 </ul>
-              </div> 
+              </div>
             </div>
             <div class="meta">
               <div class="page">

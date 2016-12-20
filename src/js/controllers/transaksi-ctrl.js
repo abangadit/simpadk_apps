@@ -26,9 +26,9 @@
   		$scope.sample_item = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'];
   		$scope.items = ['item1', 'item2', 'item3'];
   		$scope.animationsEnabled = true;
-      $scope.nama_customer = "Pelanggan Biasa";
-      $scope.alamat_customer = " - ";
-      $scope.telp_customer = " - ";
+      $rootScope.nama_customer = "Pelanggan Biasa";
+      $rootScope.alamat_customer = " - ";
+      $rootScope.telp_customer = " - ";
       $scope.cart = cartService.getForm();
       $scope.customer_id = 0;
       $scope.total = 0;
@@ -67,6 +67,12 @@
         //alert(name+" "+productService.product_price);
         open_popup(size);
   		}
+
+      $scope.hapus_customer = function (){
+        $rootScope.nama_customer = "Pelanggan Biasa";
+        $rootScope.alamat_customer = " - ";
+        $rootScope.telp_customer = " - ";
+      }
 
       //tampilkan popup pilih customer
       $scope.pilih_customer = function (){
@@ -108,7 +114,7 @@
   					order_id:0,
   					order_date:new Date(),
   					user_id:1,
-  					customer_id:$scope.customer_id,
+  					customer_id:$rootScope.customer_id,
   					total:$scope.total,
   					discount:0,
   					grand_total:$scope.total,
@@ -210,11 +216,19 @@
   	}])
   	.controller('TransaksiPrintCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {
       $scope.order_id = productService.order_id;
-      $scope.order_id = 17;
+      $scope.order_id = 29;
       //alert($scope.order_id);
       $rootScope.isLoading = true;
   		$http.get(base_url+"api/"+api_key+"/orders/"+$scope.order_id)
   		.then(function(response) {
+        console.log(response.data);
+        for(var x=0;x<response.data.length;x++){
+          //console.log($scope.data_customer[x].address);
+          $rootScope.nama_customer = response.data[x].name;
+          $rootScope.alamat_customer = response.data[x].address;
+          $rootScope.telp_customer = response.data[x].phone_no;
+        }
+
         $http.get(base_url+"api/"+api_key+"/orderitems/"+$scope.order_id)
     		.then(function(response) {
     			$scope.data_order_item = response.data;
@@ -245,6 +259,33 @@
   			console.log(response);
   			$scope.data_customer = response.data;
   		});
+
+      $rootScope.nama_customer = "";
+      $rootScope.alamat_customer = "";
+      $rootScope.telp_customer = "";
+
+      $scope.submit_customer = function(){
+        var dropdown_customer = $scope.postData.dropdown_customer;
+        //alert(dropdown_customer);
+
+        $rootScope.isLoading = true;
+        console.log(base_url+"api/"+api_key+"/customers/"+dropdown_customer);
+    		$http.get(base_url+"api/"+api_key+"/customers/"+dropdown_customer)
+    		.then(function(response) {
+    			$timeout( function(){
+            		$rootScope.isLoading = false;
+    	        }, 500);
+
+    			console.log(response);
+          for(var x=0;x<response.data.length;x++){
+            //console.log($scope.data_customer[x].address);
+            $rootScope.customer_id = response.data[x].customer_id;
+            $rootScope.nama_customer = response.data[x].name;
+            $rootScope.alamat_customer = response.data[x].address;
+            $rootScope.telp_customer = response.data[x].phone_no;
+          }
+    		});
+      }
 
   	}])
   	.controller('ModalInstanceCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {

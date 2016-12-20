@@ -3,7 +3,7 @@
  */
 var base_url = "http://localhost:3000/";
 var base_url_main = "http://localhost:6699/";
-var api_key = "d19ea5b21a429e672e92f8a14610bb227d1c"; //api key sementara (belum ada login)
+var api_key = "d19ea5b21a429e672e92f8a74712bb2d721286"; //api key sementara (belum ada login)
 
 angular.module('RDash')
     .controller('MasterCtrl', ['$rootScope','$scope', '$cookieStore', '$http', MasterCtrl]);
