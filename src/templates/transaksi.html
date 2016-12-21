@@ -13,10 +13,12 @@
                 <div class="item_desc">
                   {{data.merk_nama}}<br>
                   {{data.product_nama}}<br>
-                  {{data.default_price | currency:"Rp.":0}}
+                  <label ng-if="data.customer_price != null ">{{data.customer_price | currency:"Rp.":0}}</label>
+                  <label ng-if="data.customer_price == null ">{{data.default_price | currency:"Rp.":0}}</label>
                 </div>
               </div>
           </div>
+          <form ng-submit="checkout()">
           <div class="col-md-3 layout_checkout">
             <div class="header_transaksi"> Keranjang </div>
             <div class="body_transaksi">
@@ -25,6 +27,15 @@
               Alamat : {{alamat_customer}}<br>
               No Telp : {{telp_customer}}<br>
               Total : {{total | currency:"Rp.":0}}<br>
+              <input type="checkbox" ng-model="postData.iscredit"><label style="margin-left:10px;"> Kredit ?</label>
+              <datepicker date-format="yyyy-MM-dd" selector="form-control">
+                  <div class="input-group">
+                      <input class="form-control" placeholder="Choose a date" ng-model="postData.date"/>
+                      <span class="input-group-addon" style="cursor: pointer">
+                      <i class="fa fa-lg fa-calendar"></i>
+                      </span>
+                  </div>
+              </datepicker>
               <hr>
               <div class="row" ng-repeat="item in cart">
                 <div class="col-md-12">
@@ -36,10 +47,11 @@
             </div>
           </div>
           <div class=" col-md-3" align="center" style="float:right;">
-            <button class="btn btn-success" ng-click="checkout()"> Checkout </button>
-            <button class="btn btn-danger" ng-click="emptyCart()"> Kosongkan </button>
+            <input type="submit" class="btn btn-success" value="Proses">
+            <a class="btn btn-danger" ng-click="emptyCart()"> Kosongkan </a>
           </div>
         </div>
+      </form>
 
 
       </rd-widget-body>

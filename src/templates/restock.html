@@ -1,0 +1,58 @@
+<div class="row" ng-controller="RestockCtrl">
+  <div class="col-lg-12">
+    <rd-widget>
+      <rd-widget-header icon="fa-tasks" title="Restock">
+      </rd-widget-header>
+      <rd-widget-body classes="">
+      <button type="button" class="btn btn-primary" ng-click="pilih_customer()">Pilih Supplier</button>
+        <div class="row layout_transaksi">
+          <div class="col-md-9 layout_item">
+            <div class="header_transaksi"> Item </div>
+              <div class="item_product" ng-repeat="data in data_product" ng-click="order_popup('sm',data.product_id,data.product_nama,data.default_price)">
+                <div class="item_desc">
+                  {{data.merk_nama}}<br>
+                  {{data.product_nama}}<br>
+                  {{data.default_price | currency:"Rp.":0}}
+                </div>
+              </div>
+          </div>
+          <form ng-submit="checkout()">
+          <div class="col-md-3 layout_checkout">
+            <div class="header_transaksi"> Keranjang </div>
+              <div class="body_transaksi">
+                <div style="text-align: center;width:100%;border-bottom: 1px solid #dadada;"><h4>Supplier</h4></div>
+                Nama : {{nama_customer}}<br>
+                Alamat : {{alamat_customer}}<br>
+                No Telp : {{telp_customer}}<br>
+                Total : {{total | currency:"Rp.":0}}<br>
+                <input type="checkbox" ng-model="postData.isdebt"><label style="margin-left:10px;"> Kredit ?</label>
+                <datepicker date-format="yyyy-MM-dd" selector="form-control">
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Choose a date" ng-model="postData.date"/>
+                        <span class="input-group-addon" style="cursor: pointer">
+                        <i class="fa fa-lg fa-calendar"></i>
+                        </span>
+                    </div>
+                </datepicker>
+                <hr>
+                <div class="row" ng-repeat="item in cart">
+                  <div class="col-md-12">
+                    <div class="col-md-10" style="border-bottom: 1px solid #dadada;padding:5px 0px;font-size:11px;color:#000;">{{item.name}} ( {{item.qty}} ) {{item.price | currency:"Rp.":0}}
+                    </div>
+                    <div class="col-md-2" style="font-size:14px;color:#ff0000;">x</div>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class=" col-md-3" align="center" style="float:right;">
+            <input type="submit" class="btn btn-success" value="Proses">
+            <a class="btn btn-danger" ng-click="emptyCart()"> Kosongkan </a>
+          </div>
+        </div>
+      </form>
+
+
+      </rd-widget-body>
+    </rd-widget>
+  </div>
+</div>

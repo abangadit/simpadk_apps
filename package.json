@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "angular-chart.js": "^1.0.2",
+    "angularjs-datepicker": "^2.1.7",
     "chart.js": "^2.2.2",
     "gulp-install": "^0.6.0"
   }

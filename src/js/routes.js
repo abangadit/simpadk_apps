@@ -19,6 +19,8 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 url: '/tables',
                 templateUrl: 'templates/tables.html'
             })
+
+            //TRANSAKSI
             .state('transaksi', {
                 url: '/transaksi',
                 templateUrl: 'templates/transaksi.html'
@@ -26,6 +28,12 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
             .state('transaksi_print', {
                 url: '/transaksi_print',
                 templateUrl: 'templates/modal_print.html'
+            })
+
+            //RESTOCK
+            .state('restock', {
+                url: '/restock',
+                templateUrl: 'templates/restock.html'
             })
 
 

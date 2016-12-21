@@ -21,7 +21,7 @@
                }
            }
      })
-  	.controller('TransaksiCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal) {
+  	.controller('RestockCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal) {
       var page = 1;
   		$scope.sample_item = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'];
   		$scope.items = ['item1', 'item2', 'item3'];
@@ -49,7 +49,7 @@
   	        }, 1000);
 
   			console.log(response);
-  			$rootScope.data_product = response.data;
+  			$scope.data_product = response.data;
   		});
 
       //kosongkan cart
@@ -80,7 +80,7 @@
       //tampilkan popup pilih customer
       $scope.pilih_customer = function (){
         $rootScope.modalInstance = $uibModal.open({
-            templateUrl: 'templates/myModalCustomer.html',
+            templateUrl: 'templates/myModalSupplier.html',
             size: "md",
         });
       }
@@ -107,37 +107,34 @@
 
       //proses checkout
   		$scope.checkout = function(){
-        $scope.postData.iscredit = 0;
-        if(typeof $scope.postData.iscredit !== "undefined"){
-          $scope.postData.iscredit = 1;
+        $scope.postData.isdebt = 0;
+        if(typeof $scope.postData.isdebt !== "undefined"){
+          $scope.postData.isdebt = 1;
         }
 
         if(typeof $scope.postData.date === "undefined"){
           $scope.postData.date = "0000-00-00";
         }
 
-        if(typeof $rootScope.customer_id === "undefined"){
-          alert("pilih customer terlebih dahulu !");
+        if(typeof $rootScope.supplier_id === "undefined"){
+          alert("pilih supplier terlebih dahulu !");
         }else{
           $rootScope.isLoading = true;
           $scope.order_count = 0;
     			$http({
     				method: 'POST',
     				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
-    				url 	 : base_url+"api/"+api_key+"/orders",
+    				url 	 : base_url+"api/"+api_key+"/restocks",
     				data 	 : {
-    					order_id:0,
-    					order_date:new Date(),
+    					restock_id:0,
+    					restock_date:new Date(),
     					user_id:1,
-    					customer_id:$rootScope.customer_id,
+    					supplier_id:$rootScope.supplier_id,
     					total:$scope.total,
     					discount:0,
     					grand_total:$scope.total,
-    					delivery_date:"",
-    					isdelivered:0,
-    					remarks:"",
               due_date:$scope.postData.date,
-              iscredit:$scope.postData.iscredit,
+              isdebt:$scope.postData.isdebt,
     					key:api_key
     				},
     				transformRequest: function(obj) {
@@ -152,12 +149,7 @@
     	        	// 	$rootScope.isLoading = false;
     		        // }, 1000);
     		        // alert("Pesanan Berhasil Dibuat");
-                productService.order_id = response.data[0].insert_id;
-                productService.nama_customer = $rootScope.nama_customer;
-                productService.alamat_customer = $rootScope.alamat_customer;
-                productService.telp_customer = $rootScope.telp_customer;
-
-
+                productService.restock_id = response.data[0].insert_id;
     		        console.log(response.data[0]+" "+response.data[0].insert_id);
                 insert_order_item(response.data[0].insert_id);
 
@@ -169,7 +161,17 @@
     			  });
         }
 
+      }
+  		$scope.checkout_debug = function(){
+        $scope.postData.isdebt = 0;
+        if(typeof $scope.postData.isdebt !== "undefined"){
+          $scope.postData.isdebt = 1;
+        }
 
+        if(typeof $scope.postData.date === "undefined"){
+          $scope.postData.date = "0000-00-00";
+        }
+        console.log($rootScope.supplier_id+" "+$scope.total+" "+$scope.postData.date+" "+$scope.postData.isdebt);
 
   		};
 
@@ -179,14 +181,12 @@
     			$http({
     				method: 'POST',
     				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
-    				url 	 : base_url+"api/"+api_key+"/orderitems",
+    				url 	 : base_url+"api/"+api_key+"/restockitems",
     				data 	 : {
-    					orderitem_id:0,
-    					order_id:order_id,
-    					customer_id:$rootScope.customer_id,
-    					customer_price_id:0,
+    					restockitem_id:0,
+    					restock_id:order_id,
     					product_id:$scope.cart[i].id,
-    					customer_price:$scope.cart[i].price,
+    					price:$scope.cart[i].price,
     					quantity:$scope.cart[i].qty,
     					subtotal:$scope.cart[i].price*$scope.cart[i].qty,
     					key:api_key
@@ -210,8 +210,8 @@
         if($scope.order_count==$scope.cart.length){
           $timeout( function(){
             $rootScope.isLoading = false;
-            alert("Order Berhasil Dibuat");
-            open_popup_transaksi('lg');
+            alert("Stock Berhasil Ditambahkan");
+            //open_popup_transaksi('lg');
           }, 1000);
         }
 
@@ -238,12 +238,9 @@
       }
 
   	}])
-  	.controller('TransaksiPrintCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {
+  	.controller('RestockPrintCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {
       $scope.order_id = productService.order_id;
-      // $scope.nama_customer = productService.name;
-      // $scope.alamat_customer = productService.address;
-      // $scope.telp_customer = productService.phone_no;
-      //$scope.order_id = 29;
+      $scope.order_id = 29;
       //alert($scope.order_id);
       $rootScope.isLoading = true;
   		$http.get(base_url+"api/"+api_key+"/orders/"+$scope.order_id)
@@ -251,7 +248,9 @@
         console.log(response.data);
         for(var x=0;x<response.data.length;x++){
           //console.log($scope.data_customer[x].address);
-
+          $rootScope.nama_customer = response.data[x].name;
+          $rootScope.alamat_customer = response.data[x].address;
+          $rootScope.telp_customer = response.data[x].phone_no;
         }
 
         $http.get(base_url+"api/"+api_key+"/orderitems/"+$scope.order_id)
@@ -273,9 +272,9 @@
       }
 
   	}])
-  	.controller('ModalCustomerCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {
+  	.controller('ModalSupplierCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {
       $rootScope.isLoading = true;
-  		$http.get(base_url+"api/"+api_key+"/customers/0/")
+  		$http.get(base_url+"api/"+api_key+"/suppliers/0/")
   		.then(function(response) {
   			$timeout( function(){
           		$rootScope.isLoading = false;
@@ -294,33 +293,21 @@
         //alert(dropdown_customer);
 
         $rootScope.isLoading = true;
-        console.log(base_url+"api/"+api_key+"/customers/"+dropdown_customer);
-    		$http.get(base_url+"api/"+api_key+"/customers/"+dropdown_customer)
+        console.log(base_url+"api/"+api_key+"/suppliers/"+dropdown_customer);
+    		$http.get(base_url+"api/"+api_key+"/suppliers/"+dropdown_customer)
     		.then(function(response) {
     			$timeout( function(){
-        		$rootScope.isLoading = false;
-	        }, 500);
+            		$rootScope.isLoading = false;
+    	        }, 500);
 
     			console.log(response);
           for(var x=0;x<response.data.length;x++){
             //console.log($scope.data_customer[x].address);
-            $rootScope.customer_id = response.data[x].customer_id;
+            $rootScope.supplier_id = response.data[x].supplier_id;
             $rootScope.nama_customer = response.data[x].name;
             $rootScope.alamat_customer = response.data[x].address;
             $rootScope.telp_customer = response.data[x].phone_no;
           }
-
-          //get products katalog
-      		$rootScope.isLoading = true;
-      		$http.get(base_url+"api/"+api_key+"/products/customer/"+$rootScope.customer_id+"/0")
-      		.then(function(response) {
-      			$timeout( function(){
-              		$rootScope.isLoading = false;
-      	        }, 500);
-
-      			console.log(response);
-      			$rootScope.data_product = response.data;
-      		});
     		});
       }
 

@@ -4,9 +4,9 @@
     <div class="modal-body" id="modal-body">
       <div class="body_transaksi" id="print_nota" ng-repeat="order in data_order">
         <div style="text-align: center;width:100%;border-bottom: 1px solid #dadada;"><h4>Nota Transaksi</h4></div>
-        Nama : {{order.nama_customer}}<br>
-        Alamat : {{order.alamat_customer}}<br>
-        No Telp : {{order.telp_customer}}<br>
+        Nama : {{nama_customer}}<br>
+        Alamat : {{alamat_customer}}<br>
+        No Telp : {{telp_customer}}<br>
         Total : {{order.total | currency:"Rp.":0}}<br>
         <hr>
         <div class="row" ng-repeat="item in data_order_item">

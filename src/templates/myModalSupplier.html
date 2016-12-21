@@ -1,0 +1,15 @@
+<div ng-controller="ModalSupplierCtrl">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Pilih Supplier</h3>
+    </div>
+    <form ng-submit="submit_customer()">
+      <div class="modal-body" id="modal-body">
+        <select class="form-control" ng-model="postData.dropdown_customer">
+          <option ng-repeat="cus in data_customer" ng-value="{{cus.supplier_id}}">{{cus.name}}</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+          <button type="submit" class="btn btn-primary btn-lg">Pilih</button>
+      </div>
+    </form>
+</div>
