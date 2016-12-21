@@ -15,6 +15,7 @@
                 <th>Nama Produk</th>
                 <th>Remarks</th>
                 <th>Stok Produk</th>
+                <th>Supplier Price</th>
                 <th>Min Stok</th>
                 <th>Action</th>
               </tr>
@@ -27,6 +28,7 @@
                 <td>{{data.product_nama}}</td>
                 <td>{{data.remarks}}</td>
                 <td>{{data.stock}}</td>
+                <td>{{data.supplier_price}}</td>
                 <td>{{data.min_stock}}</td>
                 <td>
                   <a ng-click="detailProduct(data.product_id)">Detail</a> |
@@ -35,7 +37,7 @@
               </tr>
             </tbody>
           </table>
-        </div>      
+        </div>
       </rd-widget-body>
       <rd-widget-footer>
         <ul class="pagination pagination-sm pull-right">
@@ -51,5 +53,5 @@
       </rd-widget-footer>
     </rd-widget>
   </div>
-  
+
 </div>

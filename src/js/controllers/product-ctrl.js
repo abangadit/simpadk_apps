@@ -15,7 +15,7 @@ angular
 			$timeout( function(){
         		$rootScope.isLoading = false;
 	        }, 1000);
-			
+
 			console.log(response);
 			$scope.data_product = response.data;
 		});
@@ -74,15 +74,17 @@ angular
 			$http({
 				method: 'POST',
 				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
-				url 	 : base_url+"api/"+api_key+"/products", 
+				url 	 : base_url+"api/"+api_key+"/products",
 				data 	 : {
-					product_id:0, 
-					merk_id:parseInt($scope.postData.merk), 
+					product_id:0,
+					merk_id:parseInt($scope.postData.merk),
 					satuan_id:parseInt($scope.postData.satuan),
 					product_nama:$scope.postData.nama,
+					default_price:$scope.postData.default_price,
 					remarks:$scope.postData.remarks,
 					stock:$scope.postData.stok,
 					min_stock:$scope.postData.min_stok,
+					supplier_price:$scope.postData.supplier_price,
 					isactive:1
 				},
 				transformRequest: function(obj) {
@@ -105,7 +107,7 @@ angular
 		        alert("Terjadi Kesalahan, Ulangi ");
 			  });
 		}
-		
+
 	}])
 
 

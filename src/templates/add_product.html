@@ -23,6 +23,10 @@
               </select>
             </div>
             <div class="form-group">
+              <label >Default Price</label>
+              <input type="text" class="form-control" ng-model="postData.default_price">
+            </div>
+            <div class="form-group">
               <label >Remarks</label>
               <input type="text" class="form-control" ng-model="postData.remarks">
             </div>
@@ -34,10 +38,14 @@
               <label >Minimal Stok</label>
               <input type="text" class="form-control" ng-model="postData.min_stok">
             </div>
+            <div class="form-group">
+              <label >Supplier Price</label>
+              <input type="text" class="form-control" ng-model="postData.supplier_price">
+            </div>
             <button type="submit" class="btn btn-primary btn-lg">Insert</button>
           </form>
       </rd-widget-body>
     </rd-widget>
   </div>
-  
+
 </div>
