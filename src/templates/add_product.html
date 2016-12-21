@@ -11,25 +11,28 @@
             <div class="form-group">
               <label >Merk</label>
               <!-- <input type="text" class="form-control" ng-value="data.merk_nama"> -->
-              <select class="form-control" ng-model="postData.merk">
-                <option ng-repeat="merk in data_merk" ng-value="merk.merk_id">{{merk.merk_nama}}</option>
+              <select class="form-control" ng-model="postData.merk" ng-options="merk.merk_id as merk.merk_nama for merk in data_merk">
+                <option value="">Pilih Merk</option>
               </select>
+              
             </div>
             <div class="form-group">
               <label >Satuan</label>
               <!-- <input type="text" class="form-control" ng-value="data.satuan_nama"> -->
-              <select class="form-control" ng-model="postData.satuan">
-                <option ng-repeat="satuan in data_satuan" ng-value="satuan.satuan_id">{{satuan.satuan_nama}}</option>
+              
+              <select class="form-control" ng-model="postData.satuan" ng-options="satuan.satuan_id as satuan.satuan_nama for satuan in data_satuan">
+                <option value="">Pilih Satuan</option>
               </select>
             </div>
             <div class="form-group">
-              <label >Default Price</label>
+              <label >Harga Eceran</label>
               <input type="text" class="form-control" ng-model="postData.default_price">
             </div>
             <div class="form-group">
-              <label >Remarks</label>
-              <input type="text" class="form-control" ng-model="postData.remarks">
+              <label >Harga Supplier</label>
+              <input type="text" class="form-control" ng-model="postData.supplier_price">
             </div>
+            
             <div class="form-group">
               <label >Stok</label>
               <input type="text" class="form-control" ng-model="postData.stok">
@@ -39,8 +42,8 @@
               <input type="text" class="form-control" ng-model="postData.min_stok">
             </div>
             <div class="form-group">
-              <label >Supplier Price</label>
-              <input type="text" class="form-control" ng-model="postData.supplier_price">
+              <label >Keterangan</label>
+              <input type="text" class="form-control" ng-model="postData.remarks">
             </div>
             <button type="submit" class="btn btn-primary btn-lg">Insert</button>
           </form>
