@@ -10,26 +10,28 @@
             <thead>
               <tr>
                 <th class="text-center">ID</th>
+                <th>Nama Produk</th>
                 <th>Merk</th>
                 <th>Satuan</th>
-                <th>Nama Produk</th>
-                <th>Remarks</th>
+                <th>Harga Supplier</th>
+                <th>Harga Eceran</th>
                 <th>Stok Produk</th>
-                <th>Supplier Price</th>
                 <th>Min Stok</th>
+                <th>Keterangan</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="data in data_product">
                 <td class="text-center">{{data.product_id}}</td>
+                <td>{{data.product_nama}}</td>
                 <td>{{data.merk_nama}}</td>
                 <td>{{data.satuan_nama}}</td>
-                <td>{{data.product_nama}}</td>
-                <td>{{data.remarks}}</td>
-                <td>{{data.stock}}</td>
                 <td>{{data.supplier_price}}</td>
+                <td>{{data.default_price}}</td>
+                <td>{{data.stock}}</td>
                 <td>{{data.min_stock}}</td>
+                <td>{{data.remarks}}</td>
                 <td>
                   <a ng-click="detailProduct(data.product_id)">Detail</a> |
                   <a ng-click="deleteProduct(data.product_id)">Delete</a>

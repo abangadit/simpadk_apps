@@ -2,7 +2,7 @@
   <div class="col-lg-12">
     <rd-widget>
       <rd-widget-header icon="fa-tasks" title="Data Merk">
-        <a href="#">Tambah Data</a>
+        <a href="#/add_merk">Tambah Data</a>
       </rd-widget-header>
       <rd-widget-body classes="medium no-padding">
         <div class="table-responsive">
@@ -22,7 +22,7 @@
                 <td>{{merk.remarks}}</td>
                 <td>
                   <a ng-click="detailMerk(merk.merk_id)">Detail</a> |
-                  <a ng-click="detailMerk(merk.merk_id)">Delete</a>
+                  <a ng-click="deleteMerk(merk.merk_id)">Delete</a>
                 </td>
               </tr>
             </tbody>

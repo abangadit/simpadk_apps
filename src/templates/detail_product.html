@@ -6,7 +6,7 @@
           <form ng-submit="editProduct()">
             <div class="form-group">
               <label for="exampleInputEmail1">Nama Produk</label>
-              <input type="text" class="form-control" ng-value="postData.product_nama">
+              <input type="text" class="form-control" ng-model="postData.product_nama">
             </div>
             <div class="form-group">
               <label >Merk</label>
@@ -16,7 +16,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label >Satuan {{data.satuan_id}}</label>
+              <label >Satuan</label>
               <!-- <input type="text" class="form-control" ng-value="data.satuan_nama"> -->
               <select class="form-control" ng-model="postData.satuan_id" ng-options="satuan.satuan_id as satuan.satuan_nama for satuan in data_satuan">
                 <option value="">Pilih Satuan</option>
@@ -33,15 +33,16 @@
             
             <div class="form-group">
               <label >Stok</label>
-              <input type="text" class="form-control" ng-value="postData.stock">
+              <input type="text" class="form-control" ng-model="postData.stock">
             </div>
             <div class="form-group">
               <label >Minimal Stok</label>
-              <input type="text" class="form-control" ng-value="postData.min_stock">
+              <input type="text" class="form-control" ng-model="postData.min_stock">
             </div>
             <div class="form-group">
               <label >Remarks</label>
-              <input type="text" class="form-control" ng-value="postData.remarks">
+              <input type="text" class="form-control" ng-model="postData.remarks">
+              
             </div>
             <button type="submit" class="btn btn-primary btn-lg">Update</button>
           </form>

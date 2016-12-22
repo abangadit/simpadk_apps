@@ -9,7 +9,8 @@ angular
     })
 	.controller('ProductCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService', function ($timeout,$rootScope,$scope,$http,$state,productService) {
 		var page = 1;
-		$rootScope.isLoading = true;
+		$scope.refreshProduct = function(){
+			$rootScope.isLoading = true;
 		$http.get(base_url+"api/"+api_key+"/products/0/"+page)
 		.then(function(response) {
 			$timeout( function(){
@@ -20,11 +21,43 @@ angular
 			$scope.data_product = response.data;
 		});
 
+		}
 		$scope.detailProduct = function(id){
 			productService.products_id=id;
 			$scope.products_id = id;
 			$state.go('detail_product');
 		};
+
+		$scope.deleteProduct = function(id){
+			var r = confirm("Anda yakin ingin menghapus data ini?");
+			var del = false;
+			if (r == true) {
+				del=true;
+			}
+			if(del){
+				$http({
+					method: 'DELETE',
+					headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
+					url 	 : base_url+"api/"+api_key+"/products/"+id+"/0"
+				}).then(function successCallback(response) {
+					$timeout( function(){
+						$rootScope.isLoading = false;
+					}, 1000);
+					alert("Data berhasil dihapus.");
+					
+					$state.go('master_product');
+					$scope.refreshProduct();
+					}, function errorCallback(response) {
+					$timeout( function(){
+						$rootScope.isLoading = false;
+					}, 1000);
+					alert("Terjadi Kesalahan, Ulangi ");
+				});
+			}
+			
+		};
+		$scope.refreshProduct();
+		
 
 	}])
 
@@ -61,13 +94,13 @@ angular
 		$scope.editProduct = function (){
 			$rootScope.isLoading = true;
 			console.log("edit...")
-			console.log($scope.postData)
+			console.log("data posted",$scope.postData)
 			$http({
 				method: 'POST',
 				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
 				url 	 : base_url+"api/"+api_key+"/products",
 				data 	 : {
-					product_id:0,
+					product_id:$scope.postData.product_id,
 					merk_id:parseInt($scope.postData.merk_id),
 					satuan_id:parseInt($scope.postData.satuan_id),
 					product_nama:$scope.postData.product_nama,

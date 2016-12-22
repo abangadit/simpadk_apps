@@ -60,6 +60,10 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 url: '/detail_merk',
                 templateUrl: 'templates/detail_merk.html'
             })
+            .state('add_merk', {
+                url: '/add_merk',
+                templateUrl: 'templates/add_merk.html'
+            })
 
             //CUSTOMER
             .state('master_customer', {
@@ -74,6 +78,18 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 url: '/harga_customer',
                 templateUrl: 'templates/harga_customer.html'
             })
+            .state('add_harga_customer', {
+                url: '/add_harga_customer',
+                templateUrl: 'templates/add_harga_customer.html'
+            })
+            .state('detail_harga_customer', {
+                url: '/detail_harga_customer',
+                templateUrl: 'templates/detail_harga_customer.html'
+            })
+            .state('add_customer', {
+                url: '/add_customer',
+                templateUrl: 'templates/add_customer.html'
+            })
 
             //SATUAN
             .state('master_satuan', {
@@ -84,7 +100,10 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 url: '/detail_satuan',
                 templateUrl: 'templates/detail_satuan.html'
             })
-
+            .state('add_satuan', {
+                url: '/add_satuan',
+                templateUrl: 'templates/add_satuan.html'
+            })
             //USER
             .state('master_user', {
                 url: '/master_user',
@@ -93,6 +112,23 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
             .state('detail_user', {
                 url: '/detail_user',
                 templateUrl: 'templates/detail_user.html'
+            })
+            .state('add_user', {
+                url: '/add_user',
+                templateUrl: 'templates/add_user.html'
+            })
+            //SUPPLIER
+            .state('master_supplier', {
+                url: '/master_supplier',
+                templateUrl: 'templates/master_supplier.html'
+            })
+            .state('detail_supplier', {
+                url: '/detail_supplier',
+                templateUrl: 'templates/detail_supplier.html'
+            })
+            .state('add_supplier', {
+                url: '/add_supplier',
+                templateUrl: 'templates/add_supplier.html'
             })
             ;
     }
