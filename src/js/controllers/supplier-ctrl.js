@@ -4,32 +4,30 @@
 
 angular
     .module('RDash')
-    .service('CustomerService', function () {
+    .service('SupplierService', function () {
 
     })
-	.controller('CustomerCtrl', ['$timeout','$rootScope','$scope', '$http','$state','CustomerService', function ($timeout,$rootScope,$scope,$http,$state,CustomerService) {
+	.controller('SupplierCtrl', ['$timeout','$rootScope','$scope', '$http','$state','SupplierService', function ($timeout,$rootScope,$scope,$http,$state,SupplierService) {
 		var page = 1;
-		
-		$scope.refreshCustomer = function(){
+		$scope.refreshSupplier = function(){
 			$rootScope.isLoading = true;
-			$http.get(base_url+"api/"+api_key+"/customers/0/"+page)
+			$http.get(base_url+"api/"+api_key+"/suppliers/0/"+page)
 			.then(function(response) {
 				$timeout( function(){
 					$rootScope.isLoading = false;
 				}, 1000);
-
+				
 				console.log(response);
-				$scope.data_customer = response.data;
+				$scope.data_supplier = response.data;
 			});
 		}
-
-		$scope.detailCustomer = function(id){
-			CustomerService.customer_id=id;
-			$scope.customer_id = id;
-			$state.go('detail_customer');
+		$scope.detailSupplier = function(id){
+			SupplierService.Supplier_id=id;
+			$scope.Supplier_id = id;
+			$state.go('detail_supplier');
 		};
-
-		$scope.deleteCustomer = function(id){
+		
+		$scope.deleteSupplier = function(id){
 			var r = confirm("Anda yakin ingin menghapus data ini?");
 			var del = false;
 			if (r == true) {
@@ -39,15 +37,15 @@ angular
 				$http({
 					method: 'DELETE',
 					headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
-					url 	 : base_url+"api/"+api_key+"/customers/"+id+"/0"
+					url 	 : base_url+"api/"+api_key+"/suppliers/"+id+"/0"
 				}).then(function successCallback(response) {
 					$timeout( function(){
 						$rootScope.isLoading = false;
 					}, 1000);
 					alert("Data berhasil dihapus.");
 					
-					$state.go('master_customer');
-					$scope.refreshBrand();
+					$state.go('master_supplier');
+					$scope.refreshSupplier();
 					}, function errorCallback(response) {
 					$timeout( function(){
 						$rootScope.isLoading = false;
@@ -55,26 +53,16 @@ angular
 					alert("Terjadi Kesalahan, Ulangi ");
 				});
 			}
-			
 		};
-
-		$scope.priceCustomer = function(id){
-			CustomerService.customer_id=id;
-			$scope.customer_id = id;
-			$state.go('harga_customer');
-		};
-
-		$scope.refreshCustomer();
-
-
-
+		$scope.refreshSupplier();
+		
 	}])
-	.controller('CustomerDetailCtrl', ['$timeout','$rootScope','$scope', '$http','$state','CustomerService', function ($timeout,$rootScope,$scope,$http,$state,CustomerService) {
+	.controller('SupplierDetailCtrl', ['$timeout','$rootScope','$scope', '$http','$state','SupplierService', function ($timeout,$rootScope,$scope,$http,$state,SupplierService) {
 		var page = 1;
 		$rootScope.isLoading = true;
 		$scope.postData = {};
 
-		$http.get(base_url+"api/"+api_key+"/customers/"+CustomerService.customer_id+"/"+page)
+		$http.get(base_url+"api/"+api_key+"/suppliers/"+SupplierService.Supplier_id+"/"+page)
 		.then(function(response) {
 			$timeout( function(){
         		$rootScope.isLoading = false;
@@ -82,20 +70,20 @@ angular
 			console.log(response.data[0]);
 			$scope.postData = response.data[0];
 		});
-
-		$scope.editCustomer = function (){
+		$scope.editSupplier = function (){
 			$rootScope.isLoading = true;
 			$http({
 				method: 'POST',
 				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
-				url 	 : base_url+"api/"+api_key+"/customers",
+				url 	 : base_url+"api/"+api_key+"/suppliers",
 				data 	 : {
-					customer_id:parseInt($scope.postData.customer_id),
+					supplier_id:parseInt($scope.postData.supplier_id),
 					name:$scope.postData.name,
 					phone_no:$scope.postData.phone_no,
 					address:$scope.postData.address,
-					remarks:$scope.postData.remarks,
+                    remarks:$scope.postData.remarks,
 					isactive:1
+    
 				},
 				transformRequest: function(obj) {
 					var str = [];
@@ -109,8 +97,8 @@ angular
 	        		$rootScope.isLoading = false;
 		        }, 1000);
 		        alert("Data Berhasil Ditambahkan");
-				$state.go('master_customer');
-				
+				$state.go('master_supplier');
+
 			  }, function errorCallback(response) {
 			    $timeout( function(){
 	        		$rootScope.isLoading = false;
@@ -118,25 +106,26 @@ angular
 		        alert("Terjadi Kesalahan, Ulangi ");
 			  });
 		}
+
 	}])
-	.controller('CustomerAddCtrl', ['$timeout','$rootScope','$scope', '$http','$state','MerkService', function ($timeout,$rootScope,$scope,$http,$state,MerkService) {
+	.controller('SupplierAddCtrl', ['$timeout','$rootScope','$scope', '$http','$state','SupplierService', function ($timeout,$rootScope,$scope,$http,$state,SupplierService) {
 		$scope.postData = {};
 		//$rootScope.isLoading = true;
 		//load merk dropdown
 		
-		$scope.submitCustomer = function (){
+		$scope.submitSupplier = function (){
 			$rootScope.isLoading = true;
 
 			$http({
 				method: 'POST',
 				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
-				url 	 : base_url+"api/"+api_key+"/customers",
+				url 	 : base_url+"api/"+api_key+"/suppliers",
 				data 	 : {
-					customer_id:0,
+					supplier_id:0,
 					name:$scope.postData.name,
 					phone_no:$scope.postData.phone_no,
 					address:$scope.postData.address,
-					remarks:$scope.postData.remarks,
+                    remarks:$scope.postData.remarks,
 					isactive:1
 				},
 				transformRequest: function(obj) {
@@ -151,7 +140,7 @@ angular
 	        		$rootScope.isLoading = false;
 		        }, 1000);
 		        alert("Data Berhasil Ditambahkan");
-				$state.go('master_customer');
+				$state.go('master_supplier');
 
 			  }, function errorCallback(response) {
 			    $timeout( function(){
@@ -161,18 +150,7 @@ angular
 			  });
 		}
 	}])
-	.controller('CustomerHargaCtrl', ['$timeout','$rootScope','$scope', '$http','$state','CustomerService', function ($timeout,$rootScope,$scope,$http,$state,CustomerService) {
-		var page = 1;
-		//$rootScope.isLoading = true;
-		// $http.get(base_url+"api/"+api_key+"/customers/"+CustomerService.customer_id+"/"+page)
-		// .then(function(response) {
-		// 	$timeout( function(){
-    //     		$rootScope.isLoading = false;
-	  //       }, 1000);
-		// 	console.log(response);
-		// 	$scope.data_customer_detail = response.data;
-		// });
-	}])
+
 
 
 ;

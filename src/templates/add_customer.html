@@ -1,9 +1,9 @@
-<div class="row" ng-controller="CustomerDetailCtrl">
+<div class="row" ng-controller="CustomerAddCtrl">
   <div class="col-lg-12">
     <rd-widget>
       <rd-widget-body classes=" padding">
         <div>
-          <form ng-submit="editCustomer();">
+          <form ng-submit="submitCustomer()">
             <div class="form-group">
               <label>Nama</label>
               <input type="text" class="form-control" ng-model="postData.name">
@@ -17,7 +17,7 @@
               <input type="text" class="form-control" ng-model="postData.phone_no">
             </div>
             <div class="form-group">
-              <label >Remarks</label>
+              <label >Keterangan</label>
               <input type="text" class="form-control" ng-model="postData.remarks">
             </div>
             <button type="submit" class="btn btn-primary btn-lg">Update</button>
