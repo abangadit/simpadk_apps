@@ -1,0 +1,54 @@
+<div class="row" ng-controller="KasMasukCtrl">
+  <div class="col-lg-12">
+    <rd-widget>
+      <rd-widget-header icon="fa-tasks" title="Data Piutang">
+
+      </rd-widget-header>
+      <rd-widget-body classes=" no-padding">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="text-center">ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Utang</th>
+                <th>Dibayar</th>
+                <th>Sisa Utang</th>
+                <th>Due Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="data in data_orders">
+                <td class="text-center">{{data.order_id}}</td>
+                <td>{{data.piutang_date}}</td>
+                <td>{{data.name}}</td>
+                <td>{{data.value}}</td>
+                <td>{{data.paid}}</td>
+                <td>{{data.balance}}</td>
+                <td>{{data.due_date}}</td>
+                <td>
+                  <a ng-click="bayarPiutang(data.order_id,data.customer_id)">Bayar Piutang</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </rd-widget-body>
+      <rd-widget-footer>
+        <ul class="pagination pagination-sm pull-right">
+          <li><a href="#">&laquo;</a></li>
+          <li><a href="#">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+          <li><a href="#">5</a></li>
+          <li><a href="#">&raquo;</a></li>
+        </ul>
+        <div class="clearfix"></div>
+      </rd-widget-footer>
+    </rd-widget>
+  </div>
+
+</div>

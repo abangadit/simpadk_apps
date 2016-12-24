@@ -36,6 +36,16 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: 'templates/restock.html'
             })
 
+            //KAS
+            .state('kas_masuk', {
+                url: '/kas_masuk',
+                templateUrl: 'templates/kas_masuk.html'
+            })
+            .state('kas_keluar', {
+                url: '/kas_keluar',
+                templateUrl: 'templates/kas_keluar.html'
+            })
+
 
             //PRODUCT//
             .state('master_product', {

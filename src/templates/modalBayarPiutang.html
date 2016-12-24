@@ -1,0 +1,24 @@
+<div ng-controller="KasMasukCtrl">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Bayar Piutang</h3>
+    </div>
+    <form ng-submit="submitKasMasuk">
+      <div class="modal-body" id="modal-body">
+        <datepicker date-format="yyyy-MM-dd" selector="form-control">
+            <div class="input-group">
+                <input class="form-control" placeholder="Choose a date" ng-model="postData.date"/>
+                <span class="input-group-addon" style="cursor: pointer">
+                <i class="fa fa-lg fa-calendar"></i>
+                </span>
+            </div>
+        </datepicker>
+      </div>
+      <br>
+      <div class="modal-body" id="modal-body">
+        <input type="number" class="form-control" placeholder="Jumlah Bayar" ng-model="postData.jumlah_bayar">
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-primary" type="submit" >Bayar</button>
+      </div>
+    </form>
+</div>
