@@ -4,21 +4,21 @@
 
 angular
     .module('RDash')
-    .service('KasMasukService', function () {
+    .service('KasKeluarCtrl', function () {
 
     })
-	.controller('KasMasukCtrl', ['$timeout','$rootScope','$scope', '$http','$state','$uibModal','KasMasukService', function ($timeout,$rootScope,$scope,$http,$state,$uibModal,$uibModalInstance,KasMasukService) {
+	.controller('KasKeluarCtrl', ['$timeout','$rootScope','$scope', '$http','$state','$uibModal','KasKeluarCtrl', function ($timeout,$rootScope,$scope,$http,$state,$uibModal,$uibModalInstance,KasKeluarCtrl) {
 		var page = 1;
     $scope.postData = {};
 
     $rootScope.isLoading = true;
 
     $scope.getData = function(){
-      console.log(base_url+"api/"+api_key+"/piutang/0/"+page);
+      console.log(base_url+"api/"+api_key+"/utang/0/"+page);
       $http({
         method: 'GET',
         headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
-        url 	 : base_url+"api/"+api_key+"/piutang/0/"+page,
+        url 	 : base_url+"api/"+api_key+"/utang/0/"+page,
         data 	 : {
           customer_id:0,
           date_from:"0000-00-00",

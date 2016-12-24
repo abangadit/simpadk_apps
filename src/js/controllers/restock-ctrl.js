@@ -121,13 +121,18 @@
         }else{
           $rootScope.isLoading = true;
           $scope.order_count = 0;
+          var date = new Date();
+          var day = date.getDate();
+          var monthIndex = date.getMonth();
+          var year = date.getFullYear();
+
     			$http({
     				method: 'POST',
     				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
     				url 	 : base_url+"api/"+api_key+"/restocks",
     				data 	 : {
     					restock_id:0,
-    					restock_date:new Date(),
+    					restock_date:year+"-"+monthIndex+"-"+day,
     					user_id:1,
     					supplier_id:$rootScope.supplier_id,
     					total:$scope.total,
