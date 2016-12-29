@@ -38,6 +38,20 @@ angular
             }, 1000);
           console.log(response.data);
           $scope.data_orders = response.data;
+          $scope.page_count=response.data[0].page_count;
+          $scope.page_next=page>$scope.page_count?$scope.page_count:page+1;
+          $scope.page_prev=page<=1?1:page-1;
+          
+          console.log("pagecount:",$scope.page_count);
+          $scope.pages = [];
+          var i=1;
+          for(i=1;i<=$scope.page_count;i++){
+            if(i>=page-5 && i<=page+5){
+              $scope.pages.push(page==i?"["+i+"]":i);
+            }
+            
+
+          }
 
         }, function errorCallback(response) {
           $timeout( function(){
@@ -49,7 +63,12 @@ angular
     
     $scope.getData();
     
-
+    $scope.setpage=function(page_no){
+			console.log("gotopage",page_no);
+			page=page_no;
+			$scope.getData();
+			
+		}
     $scope.bayarPiutang = function(order_id,customer_id){
       console.log("bayar piutang "+order_id);
       $rootScope.order_id = order_id;
@@ -87,12 +106,13 @@ angular
 					return str.join('&');
 				}
 			}).then(function successCallback(response) {
+			    alert("Data Berhasil Ditambahkan");
 			    $timeout( function(){
 	        		$rootScope.isLoading = false;
+              $scope.getData();
+              $rootScope.modalInstance.dismiss();
+              window.location.reload(true); 
 		        }, 1000);
-		      alert("Data Berhasil Ditambahkan");
-				  $scope.getData();
-          $rootScope.modalInstance.dismiss();
 
 			  }, function errorCallback(response) {
 			    $timeout( function(){

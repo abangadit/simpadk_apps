@@ -121,13 +121,18 @@
         }else{
           $rootScope.isLoading = true;
           $scope.order_count = 0;
+					var date = new Date();
+          var day = date.getDate();
+          var monthIndex = date.getMonth();
+          var year = date.getFullYear();
+
     			$http({
     				method: 'POST',
     				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
     				url 	 : base_url+"api/"+api_key+"/orders",
     				data 	 : {
     					order_id:0,
-    					order_date:new Date(),
+    					order_date:year+"-"+monthIndex+"-"+day,
     					user_id:1,
     					customer_id:$rootScope.customer_id,
     					total:$scope.total,

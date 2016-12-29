@@ -19,7 +19,27 @@ angular
 				
 				console.log(response);
 				$scope.data_supplier = response.data;
+				$scope.page_count=response.data[0].page_count;
+				$scope.page_next=page>$scope.page_count?$scope.page_count:page+1;
+				$scope.page_prev=page<=1?1:page-1;
+				
+				console.log("pagecount:",$scope.page_count);
+				$scope.pages = [];
+				var i=1;
+				for(i=1;i<=$scope.page_count;i++){
+					if(i>=page-5 && i<=page+5){
+						$scope.pages.push(page==i?"["+i+"]":i);
+					}
+					
+
+				}
 			});
+		}
+		$scope.setpage=function(page_no){
+			console.log("gotopage",page_no);
+			page=page_no;
+			$scope.refreshSupplier();
+			
 		}
 		$scope.detailSupplier = function(id){
 			SupplierService.Supplier_id=id;
