@@ -11,7 +11,7 @@
 					<div class="widget-icon green pull-left">
 						<i class="fa fa-users"></i>
 					</div>
-					<div class="title">80</div>
+					<div class="title"><label ng-bind="daily">{{daily}}</label></div>
 					<div class="comment">Penjualan Hari Ini</div>
 				</rd-widget-body>
 			</rd-widget>
@@ -22,7 +22,7 @@
 					<div class="widget-icon red pull-left">
 						<i class="fa fa-tasks"></i>
 					</div>
-					<div class="title">16</div>
+					<div class="title"><label ng-bind="weekly">{{weekly}}</label></div>
 					<div class="comment">Penjualan Minggu Ini</div>
 				</rd-widget-body>
 			</rd-widget>
@@ -33,7 +33,7 @@
 					<div class="widget-icon orange pull-left">
 						<i class="fa fa-sitemap"></i>
 					</div>
-					<div class="title">225</div>
+					<div class="title"><label ng-bind="monthly">{{monthly}}</label></div>
 					<div class="comment">Penjualan Bulan Ini</div>
 				</rd-widget-body>
 			</rd-widget>
@@ -42,11 +42,11 @@
 
 
 	<div class="row">
-		
+
 		<div class="col-lg-12">
 			<rd-widget>
 				<rd-widget-header icon="fa-users" title="Grafik Penjualan Bulan Ini">
-					
+
 				</rd-widget-header>
 				<rd-widget-body classes="padding">
 					<canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" height="320" width="800"></canvas>
@@ -57,47 +57,21 @@
 
 
 	<div class="row">
-		
-		<div class="col-lg-12">
-			<rd-widget>
-				<rd-widget-header icon="fa-users" title="Jadwal Pengiriman">
-					<input type="text" placeholder="Search" class="form-control input-sm" />
-				</rd-widget-header>
-				<rd-widget-body classes="medium no-padding">
-					<div class="table-responsive">
-						<table class="table">
-							<thead>
-								<tr><th class="text-center">ID</th><th>Username</th><th>Role</th><th>Account</th></tr>
-							</thead>
-							<tbody>
-								<tr><td class="text-center">1</td><td>Joe Bloggs</td><td>Super Admin</td><td>AZ23045</td></tr>
-								<tr><td class="text-center">2</td><td>Timothy Hernandez</td><td>Admin</td><td>AU24783</td></tr>
-								<tr><td class="text-center">3</td><td>Joe Bickham</td><td>User</td><td>AM23781</td></tr>
-							</tbody>
-						</table>
-	        		</div>
-				</rd-widget-body>
-			<rd-widget>
-		</div>
-	</div>
 
-	<div class="row">
-		
 		<div class="col-lg-12">
 			<rd-widget>
-				<rd-widget-header icon="fa-users" title="Peringatan Stok">
-					<input type="text" placeholder="Search" class="form-control input-sm" />
+				<rd-widget-header icon="fa-users" class="red" title="Peringatan Stok">
 				</rd-widget-header>
 				<rd-widget-body classes="medium no-padding">
 					<div class="table-responsive">
 						<table class="table">
 							<thead>
-								<tr><th class="text-center">ID</th><th>Username</th><th>Role</th><th>Account</th></tr>
+								<tr><th>Merk</th><th>Min Stok</th><th>Nama Produk</th><th>Satuan</th><th>Stok Tersisa</th></tr>
 							</thead>
 							<tbody>
-								<tr><td class="text-center">1</td><td>Joe Bloggs</td><td>Super Admin</td><td>AZ23045</td></tr>
-								<tr><td class="text-center">2</td><td>Timothy Hernandez</td><td>Admin</td><td>AU24783</td></tr>
-								<tr><td class="text-center">3</td><td>Joe Bickham</td><td>User</td><td>AM23781</td></tr>
+								<tr ng-repeat="row in data_stok">
+									<td>{{row.merk_nama}}</td><td class="color_yellow">{{row.min_stock}}</td><td>{{row.product_nama}}</td><td>{{row.satuan_nama}}</td><td class="color_red">{{row.stock}}</td>
+								</tr>
 							</tbody>
 						</table>
 	        		</div>
@@ -106,3 +80,15 @@
 		</div>
 	</div>
 </div>
+
+<style>
+td,th{
+	text-align: center;
+}
+.color_red{
+	color: red;
+}
+.color_yellow{
+	color: #ff6100;
+}
+</style>
