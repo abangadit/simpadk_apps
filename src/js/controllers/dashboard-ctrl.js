@@ -36,7 +36,7 @@ angular
     //----//
 
     //get grafik dashboard//
-    $http.get(base_url+"api/"+api_key+"/dashboards/graphic/daily")
+    $http.get(base_url+"api/"+api_key+"/dashboards/graphic/month")
     .then(function(response) {
       $rootScope.isLoading = false;
       var i=1;
