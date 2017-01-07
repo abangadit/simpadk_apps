@@ -3,7 +3,8 @@
  */
 var base_url = "http://localhost:3000/";
 var base_url_main = "http://localhost:6699/";
-var api_key = "c89ba5b91d1ed6642892fea1431cba28731680"; //api key sementara (belum ada login)
+//var api_key = "c89ba5b91d1ed6642892fea1431cba28731680"; //api key sementara (belum ada login)
+var api_key;
 
 angular.module('RDash')
     .controller('MasterCtrl', ['$rootScope','$scope', '$cookieStore', '$http','$timeout', MasterCtrl]);
@@ -16,7 +17,10 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
     $scope.expired_date = window.localStorage['expired_date'];
     $scope.apikey = window.localStorage['apikey'];
     $scope.isLogin = window.localStorage['isLogin'];
-    
+
+    api_key = window.localStorage['apikey'];
+
+
     $rootScope.isLoading = false;
     var mobileView = 992;
 
@@ -87,15 +91,17 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
             $scope.isLogin = true;
             window.localStorage['isLogin'] = true;
             window.localStorage['user_nama'] = $scope.postData.username;
-            window.localStorage['apikey'] = response.data.apikey;
-            window.localStorage['user_level'] = response.data.user_level;
-            window.localStorage['expired_date'] = response.data.expired_date;
+            window.localStorage['apikey'] = response.data[0].apikey;
+            window.localStorage['user_level'] = response.data[0].user_level;
+            window.localStorage['expired_date'] = response.data[0].expired_date;
 
             $scope.user_nama = window.localStorage['user_nama'];
             $scope.user_level = window.localStorage['user_level'];
             $scope.expired_date = window.localStorage['expired_date'];
             $scope.apikey = window.localStorage['apikey'];
             $scope.isLogin = window.localStorage['isLogin'];
+
+            api_key = window.localStorage['apikey'];
           }
 
 
