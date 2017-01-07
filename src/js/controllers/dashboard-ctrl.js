@@ -25,7 +25,7 @@ angular
     //get widget sales//
     $rootScope.isLoading = true;
     console.log("url",base_url+"api/"+api_key+"/dashboards/saleswidget")
-      
+
     $http.get(base_url+"api/"+api_key+"/dashboards/saleswidget")
     .then(function(response) {
       $rootScope.isLoading = false;
@@ -43,13 +43,14 @@ angular
       $rootScope.isLoading = false;
       var i=1;
       for(var x = 0;x<=response.data.length-1;x++){
-        
+
         var item = response.data[x];
-        console.log("item",item)
+        //console.log("item",item)
         $scope.labels.push(item.label);
         $scope.data.push(item.value);
         i++;
       }
+      console.log(response.data);
 /*      for(var x = 1;x<=response.data.length;x++){
         $scope.labels.push(x);
         $scope.data.push(response.data[x]);

@@ -140,6 +140,12 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 url: '/add_supplier',
                 templateUrl: 'templates/add_supplier.html'
             })
+
+            //LAPORAN
+            .state('laporan', {
+                url: '/laporan',
+                templateUrl: 'templates/laporan.html'
+            })
             ;
     }
 ]);

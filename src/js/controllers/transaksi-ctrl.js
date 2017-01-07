@@ -108,6 +108,13 @@
       //proses checkout
   		$scope.checkout = function(){
         $scope.postData.iscredit = 0;
+        var date = new Date();
+        var day = date.getDate();
+        var monthIndex = date.getMonth();
+        var year = date.getFullYear();
+
+        console.log(year+" "+monthIndex+" "+day);
+
         if(typeof $scope.postData.iscredit !== "undefined"){
           $scope.postData.iscredit = 1;
         }
@@ -132,7 +139,7 @@
     				url 	 : base_url+"api/"+api_key+"/orders",
     				data 	 : {
     					order_id:0,
-    					order_date:year+"-"+monthIndex+"-"+day,
+    					order_date:year+"-"+(monthIndex+1)+"-"+day,
     					user_id:1,
     					customer_id:$rootScope.customer_id,
     					total:$scope.total,
