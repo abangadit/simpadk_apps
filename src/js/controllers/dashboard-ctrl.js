@@ -24,6 +24,8 @@ angular
 
     //get widget sales//
     $rootScope.isLoading = true;
+    console.log("url",base_url+"api/"+api_key+"/dashboards/saleswidget")
+      
     $http.get(base_url+"api/"+api_key+"/dashboards/saleswidget")
     .then(function(response) {
       $rootScope.isLoading = false;
@@ -40,8 +42,7 @@ angular
     .then(function(response) {
       $rootScope.isLoading = false;
       var i=1;
-      console.log("response",response.data)
-      for(var x = 0;x<=response.data.length;x++){
+      for(var x = 0;x<=response.data.length-1;x++){
         
         var item = response.data[x];
         console.log("item",item)
