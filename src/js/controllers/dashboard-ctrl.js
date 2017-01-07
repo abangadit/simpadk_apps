@@ -36,15 +36,23 @@ angular
     //----//
 
     //get grafik dashboard//
-    $http.get(base_url+"api/"+api_key+"/dashboards/graphic/month")
+    $http.get(base_url+"api/"+api_key+"/dashboards/graphic/daily")
     .then(function(response) {
       $rootScope.isLoading = false;
-
-      for(var x = 1;x<=response.data.length;x++){
+      var i=1;
+      console.log("response",response.data)
+      for(var x = 0;x<=response.data.length;x++){
+        
+        var item = response.data[x];
+        console.log("item",item)
+        $scope.labels.push(item.label);
+        $scope.data.push(item.value);
+        i++;
+      }
+/*      for(var x = 1;x<=response.data.length;x++){
         $scope.labels.push(x);
         $scope.data.push(response.data[x]);
-      }
-      console.log(response.data);
+      }*/
     });
     //----//
 
