@@ -1,41 +1,58 @@
 
-<div class="row">
+<div ng-controller="ReportCtrl">
+  <div class="row" >
   <div class="col-lg-12">
     <form class="padding">
-      <div class="form-group col-md-3">
+      <div class="form-group col-md-2">
+        
         <label>Pilih Jenis Laporan</label>
-        <select class="form-control">
-          <option>Stock</option>
-          <option>Restock</option>
-          <option>Utang</option>
-          <option>Piutang</option>
-          <option>Order</option>
+        <select class="form-control" ng-model="reportType">
+          <option value="stock">Stock</option>
+          <option value="restock">Restock</option>
+          <option value="utang">Utang</option>
+          <option value="piutang">Piutang</option>
+          <option value="order">Order</option>
+          <option value="cashflow">Aliran Kas</option>
+          
         </select>
       </div>
-      <div class="form-group col-md-3">
+      
+      <div class="form-group col-md-3" ng-show="reportType!='stock'">
         <label>Dari Tanggal</label>
-        <datepicker date-format="yyyy-MM-dd" selector="form-control">
+        <datepicker date-format="yyyy-MM-dd" selector="date1">
             <div class="input-group">
-                <input class="form-control" placeholder="Choose a date" ng-model="postData.date"/>
+                <input class="form-control date1" placeholder="Choose a date" ng-model="date_from"/>
                 <span class="input-group-addon" style="cursor: pointer">
                 <i class="fa fa-lg fa-calendar"></i>
                 </span>
             </div>
         </datepicker>
       </div>
-      <div class="form-group col-md-3">
+      <div class="form-group col-md-3" ng-show="reportType!='stock'">
         <label>Sampai Tanggal</label>
-        <datepicker date-format="yyyy-MM-dd" selector="form-control">
+        <datepicker date-format="yyyy-MM-dd" selector="date2">
             <div class="input-group">
-                <input class="form-control" placeholder="Choose a date" ng-model="postData.date"/>
+                <input class="form-control date2" placeholder="Choose a date" ng-model="date_to"/>
                 <span class="input-group-addon" style="cursor: pointer">
                 <i class="fa fa-lg fa-calendar"></i>
                 </span>
             </div>
         </datepicker>
       </div>
-      <div class="form-group col-md-3">
-        <button class="form-control btn btn-primary" style="margin-top:24px;">Cari</button>
+      <div class="form-group col-md-2" ng-show="reportType=='utang' || reportType=='restock'">
+        <label>Pilih Supplier</label>
+        <select class="form-control" ng-model="supplier_id" >
+          <option ng-repeat="item in data_supplier" ng-value="{{item.supplier_id}}">{{item.name}}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-2" ng-show="reportType=='piutang' || reportType=='order'">
+        <label>Pilih Customer</label>
+        <select class="form-control" ng-model="customer_id" >
+          <option ng-repeat="item in data_customer" ng-value="{{item.customer_id}}">{{item.name}}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-2">
+        <button class="form-control btn btn-primary" style="margin-top:24px;" ng-click="proceedReport()">Tampilkan</button>
       </div>
     </form>
   </div>
@@ -46,24 +63,32 @@
       <rd-widget-body>
         <rd-widget-body classes=" no-padding">
           <div class="table-responsive">
+            <h4>{{reportTitle}}</h4>
+            <h5>{{reportPeriod}}</h5>
+
             <table class="table">
+              <thead>
+								<tr>
+                  <th ng-repeat="row in columns">{{row}}</th>
+                </tr>
+							</thead>
               <tbody>
-                <tr><td>RDVMPC001</td><td>238.103.133.37</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
-                <tr><td>RDVMPC002</td><td>68.66.63.170</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
-                <tr><td>RDVMPC003</td><td>76.117.212.33</td><td><span tooltip="Server Down!" class="text-danger"><i class="fa fa-warning"></i></span></td></tr>
-                <tr><td>RDPHPC001</td><td>91.88.224.5</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
-                <tr><td>RDESX001</td><td>197.188.15.93</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
-                <tr><td>RDESX002</td><td>168.85.154.251</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
-                <tr><td>RDESX003</td><td>209.25.191.61</td><td><span tooltip="Server Down!" class="text-danger"><i class="fa fa-warning"></i></span></td></tr>
-                <tr><td>RDESX004</td><td>252.37.192.235</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
-                <tr><td>RDTerminal01</td><td>139.71.18.207</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
-                <tr><td>RDTerminal02</td><td>136.80.122.212</td><td><span tooltip="Could not connect!" class="text-warning"><i class="fa fa-flash"></i></span></td></tr>
-                <tr><td>RDDomainCont01</td><td>196.80.245.33</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
+                <tr ng-repeat="rowData in reportData">
+                  <td ng-repeat="col in colname">{{rowData[col]}}</td>
+                </tr>
+                <!--<tr><td>RDVMPC001</td><td>238.103.133.37</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>-->
+                
               </tbody>
+              <tfoot>
+                <tr ng-show="sumname.length>0">
+                  <td  colspan={{_colspan}}>Total</td><td ng-repeat="col in sumname">{{reportData[0][col]}}</td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </rd-widget-body>
       </rd-widget-body>
     </rd-widget>
   </div>
+</div>
 </div>
