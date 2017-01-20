@@ -94,12 +94,17 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
             })
             .state('detail_harga_customer', {
                 url: '/detail_harga_customer',
-                templateUrl: 'templates/detail_harga_customer.html'
+                templateUrl: 'templates/detail_harga_customer.html' 
             })
             .state('add_customer', {
                 url: '/add_customer',
                 templateUrl: 'templates/add_customer.html'
             })
+            .state('add_customerprices', {
+                url: '/add_customerprices',
+                templateUrl: 'templates/add_customerprices.html'
+            })
+
 
             //SATUAN
             .state('master_satuan', {
