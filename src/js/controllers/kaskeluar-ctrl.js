@@ -41,7 +41,7 @@ angular
           $scope.page_count=response.data[0].page_count;
           $scope.page_next=page>$scope.page_count?$scope.page_count:page+1;
           $scope.page_prev=page<=1?1:page-1;
-          
+
           console.log("pagecount:",$scope.page_count);
           $scope.pages = [];
           var i=1;
@@ -49,7 +49,7 @@ angular
             if(i>=page-5 && i<=page+5){
               $scope.pages.push(page==i?"["+i+"]":i);
             }
-            
+
 
           }
 
@@ -60,13 +60,13 @@ angular
             alert("Terjadi Kesalahan, Ulangi ");
         });
     }
-    
+
     $scope.getData();
     $scope.setpage=function(page_no){
 			console.log("gotopage",page_no);
 			page=page_no;
 			$scope.getData();
-			
+
 		}
 
     $scope.bayarPiutang = function(order_id,customer_id){
@@ -79,10 +79,11 @@ angular
           size: "md",
       });
     }
-    $scope.bayarHutang = function(order_id,customer_id){
+    $scope.bayarHutang = function(order_id,customer_id,nominal_bayar){
       console.log("bayar piutang "+order_id);
       $rootScope.order_id = order_id;
       $rootScope.customer_id = customer_id;
+      $rootScope.nominal_bayar = nominal_bayar;
 
       $rootScope.modalInstance = $uibModal.open({
           templateUrl: 'templates/modalBayarHutang.html',
@@ -95,41 +96,48 @@ angular
     };
 
 		$scope.submitKasKeluar = function(){
-      $rootScope.isLoading = true;
+      if($scope.postData.jumlah_bayar > $rootScope.nominal_bayar){
+        alert("Jumlah bayar tidak bisa lebih besar dari nominal Utang");
+      }else if($scope.postData.jumlah_bayar==0){
+        alert("Jumlah bayar tidak boleh kosong");
+      }else if($scope.postData.jumlah_bayar==null){
+        alert("Jumlah bayar tidak boleh kosong");
+      }else{
+        $rootScope.isLoading = true;
+  			$http({
+  				method: 'POST',
+  				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
+  				url 	 : base_url+"api/"+api_key+"/cashflows/bayarutang",
+  				data 	 : {
+  					bayar_date:$scope.postData.date,
+  					restock_id:$rootScope.order_id,
+  					value_bayar:$scope.postData.jumlah_bayar,
+            remarks:"",
+  					key:api_key
+  				},
+  				transformRequest: function(obj) {
+  					var str = [];
+  					for(var p in obj){
+  					  str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+  					}
+  					return str.join('&');
+  				}
+  			}).then(function successCallback(response) {
+  		      alert("Data Berhasil Ditambahkan");
+  			    $timeout( function(){
+  	        		$rootScope.isLoading = false;
+                $scope.getData();
+                $rootScope.modalInstance.dismiss();
+                window.location.reload(true);
+  		        }, 1000);
 
-			$http({
-				method: 'POST',
-				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
-				url 	 : base_url+"api/"+api_key+"/cashflows/bayarutang",
-				data 	 : {
-					bayar_date:$scope.postData.date,
-					restock_id:$rootScope.order_id,
-					value_bayar:$scope.postData.jumlah_bayar,
-          remarks:"",
-					key:api_key
-				},
-				transformRequest: function(obj) {
-					var str = [];
-					for(var p in obj){
-					  str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
-					}
-					return str.join('&');
-				}
-			}).then(function successCallback(response) {
-		      alert("Data Berhasil Ditambahkan");
-			    $timeout( function(){
-	        		$rootScope.isLoading = false;
-              $scope.getData();
-              $rootScope.modalInstance.dismiss();
-              window.location.reload(true); 
-		        }, 1000);
-
-			  }, function errorCallback(response) {
-			    $timeout( function(){
-	        		$rootScope.isLoading = false;
-		        }, 1000);
-		        alert("Terjadi Kesalahan, Ulangi ");
-			  });
+  			  }, function errorCallback(response) {
+  			    $timeout( function(){
+  	        		$rootScope.isLoading = false;
+  		        }, 1000);
+  		        alert("Terjadi Kesalahan, Ulangi ");
+  			  });
+      }
 		};
 
 	}])

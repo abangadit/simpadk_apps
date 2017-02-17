@@ -138,7 +138,7 @@
 
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
-      <ul class="sidebar">
+      <ul class="sidebar" class="hidden_menu" ng-show="isAdmin" ng-hide="isAdmin">
         <li class="sidebar-main">
           <a ng-click="toggleSidebar()">
             Dashboard
@@ -179,6 +179,51 @@
         </li>
         <li class="sidebar-list">
           <a class="maju_dikit" href="#/master_satuan">Data Satuan </a>
+        </li>
+        <li class="sidebar-list">
+          <a class="maju_dikit" href="#/master_user">Data User </a>
+        </li>
+        <li class="sidebar-list">
+          <a class="maju_dikit" href="#/master_supplier">Data Supplier </a>
+        </li>
+      </ul>
+      <ul class="sidebar" class="hidden_menu" ng-show="isKasir" ng-hide="isKasir">
+        <li class="sidebar-main">
+          <a ng-click="toggleSidebar()">
+            Dashboard
+            <span class="menu-icon glyphicon glyphicon-transfer"></span>
+          </a>
+        </li>
+        <li class="sidebar-title"><span>NAVIGATION</span></li>
+        <li class="sidebar-list">
+          <a href="#/transaksi">Transaksi <span class="menu-icon fa fa-money"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a href="#/restock">Restock <span class="menu-icon fa fa-money"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a href="#/kas_masuk">Kas Masuk <span class="menu-icon fa fa-money"></span></a>
+        </li>
+      </ul>
+      <ul class="sidebar" class="hidden_menu" ng-show="isMarketing" ng-hide="isMarketing">
+        <li class="sidebar-main">
+          <a ng-click="toggleSidebar()">
+            Dashboard
+            <span class="menu-icon glyphicon glyphicon-transfer"></span>
+          </a>
+        </li>
+        <li class="sidebar-title"><span>NAVIGATION</span></li>
+        <li class="sidebar-list">
+          <a href="#/transaksi">Transaksi <span class="menu-icon fa fa-money"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a href="#/restock">Restock <span class="menu-icon fa fa-money"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a href="#/kas_masuk">Kas Masuk <span class="menu-icon fa fa-money"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a class="maju_dikit" href="#/master_product">Data Product </a>
         </li>
         <li class="sidebar-list">
           <a class="maju_dikit" href="#/master_user">Data User </a>

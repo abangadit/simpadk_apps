@@ -88,6 +88,8 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
           if(response.data=="Invalid user/password"){
             alert(response.data);
           }else{
+
+            //user level 1 = administrator, 2 = penjaga toko, 3 = marketing / pemilik toko
             $scope.isLogin = true;
             window.localStorage['isLogin'] = true;
             window.localStorage['user_nama'] = $scope.postData.username;
@@ -100,6 +102,21 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
             $scope.expired_date = window.localStorage['expired_date'];
             $scope.apikey = window.localStorage['apikey'];
             $scope.isLogin = window.localStorage['isLogin'];
+
+            $scope.isAdmin = false;
+            $scope.isKasir = false;
+            $scope.isMarketing = false;
+
+            if($scope.user_level==1){
+              $scope.isAdmin = true;
+            }
+            if($scope.user_level==2){
+              $scope.isKasir = true;
+            }
+            if($scope.user_level==3){
+              $scope.isMarketing = true;
+            }
+
 
             api_key = window.localStorage['apikey'];
           }
