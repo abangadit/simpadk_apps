@@ -42,12 +42,14 @@
       <div class="form-group col-md-2" ng-show="reportType=='utang' || reportType=='restock'">
         <label>Pilih Supplier</label>
         <select class="form-control" ng-model="supplier_id" >
+          <option value="0">Semua Supplier</option>
           <option ng-repeat="item in data_supplier" ng-value="{{item.supplier_id}}">{{item.name}}</option>
         </select>
       </div>
       <div class="form-group col-md-2" ng-show="reportType=='piutang' || reportType=='order'">
         <label>Pilih Customer</label>
         <select class="form-control" ng-model="customer_id" >
+          <option value="0">Semua Customer</option>
           <option ng-repeat="item in data_customer" ng-value="{{item.customer_id}}">{{item.name}}</option>
         </select>
       </div>
