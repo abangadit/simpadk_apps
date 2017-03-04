@@ -68,10 +68,16 @@
 	float:left;
 	width: 100%;
 	background: #637db7;
-	height: 60px;
+	height: 90px;
 	color: #fff;
 }
-
+.item_desc_zero{
+	float:left;
+	width: 100%;
+	background: red;
+	height: 90px;
+	color: #fff;
+}
 
 .body_transaksi{
 	padding:8px;

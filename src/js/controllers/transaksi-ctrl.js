@@ -61,13 +61,17 @@
       }
 
       //tampilkan popup order
-  		$scope.order_popup = function(size,id,name,price){
+  		$scope.order_popup = function(size,id,name,price,stock){
   			productService.product_id=id;
     		productService.product_name=name;
     		productService.product_price=price;
 
         //alert(name+" "+productService.product_price);
-        open_popup(size);
+        if(stock>0){
+          open_popup(size);
+        }else{
+          alert("Stok habis.");
+        }
   		}
 
       $scope.hapus_customer = function (){

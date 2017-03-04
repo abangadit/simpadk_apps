@@ -9,8 +9,8 @@
         <div class="row layout_transaksi">
           <div class="col-md-9 layout_item">
             <div class="header_transaksi"> Item </div>
-              <div class="item_product" ng-repeat="data in data_product" ng-click="order_popup('sm',data.product_id,data.product_nama,data.default_price)">
-                <div class="item_desc">
+              <div class="item_product" ng-repeat="data in data_product" ng-click="order_popup('sm',data.product_id,data.product_nama,data.default_price,data.stock)">
+                <div class="item_desc" ng-class="{'item_desc_zero':data.stock==0}">
                   {{data.merk_nama}}<br>
                   {{data.product_nama}}<br>
                   <label ng-if="data.customer_price != null ">{{data.customer_price | currency:"Rp.":0}}</label>
