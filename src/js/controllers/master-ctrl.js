@@ -88,7 +88,7 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
           if(response.data=="Invalid user/password"){
             alert(response.data);
           }else{
-
+            alert($scope.user_level);
             //user level 1 = administrator, 2 = penjaga toko, 3 = marketing / pemilik toko
             $scope.isLogin = true;
             window.localStorage['isLogin'] = true;
