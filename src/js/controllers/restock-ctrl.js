@@ -26,13 +26,13 @@
   		$scope.sample_item = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'];
   		$scope.items = ['item1', 'item2', 'item3'];
   		$scope.animationsEnabled = true;
-      $rootScope.nama_customer = "Pelanggan Biasa";
+      $rootScope.nama_customer = "";
       $rootScope.alamat_customer = " - ";
       $rootScope.telp_customer = " - ";
       $scope.cart = cartService.getForm();
-      $scope.customer_id = 0;
+      $scope.supplier_id = 0;
       $scope.total = 0;
-      $rootScope.customer_id = 0;
+      $rootScope.supplier_id = 0;
       $scope.postData = {};
       //$scope.cart = $scope.sample_item;
 
@@ -62,19 +62,23 @@
 
       //tampilkan popup order
   		$scope.order_popup = function(size,id,name,price){
+        if($rootScope.supplier_id>0){
   			productService.product_id=id;
     		productService.product_name=name;
     		productService.product_price=price;
 
         //alert(name+" "+productService.product_price);
         open_popup(size);
+        }else{
+          alert("Pilih Supplier terlebih dahulu");
+        }
   		}
 
       $scope.hapus_customer = function (){
-        $rootScope.nama_customer = "Pelanggan Biasa";
+        $rootScope.nama_customer = "";
         $rootScope.alamat_customer = " - ";
         $rootScope.telp_customer = " - ";
-        $rootScope.customer_id = 0;
+        $rootScope.supplier_id = 0;
       }
 
       //tampilkan popup pilih customer
