@@ -208,9 +208,9 @@
     					customer_id:$rootScope.customer_id,
     					customer_price_id:0,
     					product_id:$scope.cart[i].id,
-    					customer_price:$scope.cart[i].price,
+    					customer_price:$scope.cart[i].price/$scope.cart[i].qty,
     					quantity:$scope.cart[i].qty,
-    					subtotal:$scope.cart[i].price*$scope.cart[i].qty,
+    					subtotal:$scope.cart[i].price,
     					key:api_key
     				},
     				transformRequest: function(obj) {

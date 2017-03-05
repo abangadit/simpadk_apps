@@ -135,7 +135,7 @@
     				url 	 : base_url+"api/"+api_key+"/restocks",
     				data 	 : {
     					restock_id:0,
-    					restock_date:year+"-"+monthIndex+"-"+day,
+    					restock_date:year+"-"+(monthIndex+1)+"-"+day,
     					user_id:$scope.user_id,
     					supplier_id:$rootScope.supplier_id,
     					total:$scope.total,
@@ -186,6 +186,7 @@
       function insert_order_item(order_id){
         console.log("insert order item after order created , order_id:"+order_id);
         for (var i = 0; i < $scope.cart.length; i++) {
+          console.log("cart",$scope.cart)
     			$http({
     				method: 'POST',
     				headers  : { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -194,9 +195,9 @@
     					restockitem_id:0,
     					restock_id:order_id,
     					product_id:$scope.cart[i].id,
-    					price:$scope.cart[i].price,
+    					price:$scope.cart[i].price/$scope.cart[i].qty,
     					quantity:$scope.cart[i].qty,
-    					subtotal:$scope.cart[i].price*$scope.cart[i].qty,
+    					subtotal:$scope.cart[i].price,
     					key:api_key
     				},
     				transformRequest: function(obj) {

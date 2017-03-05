@@ -22,12 +22,12 @@
             <tbody>
               <tr ng-repeat="data in data_orders">
                 <td class="text-center">{{data.utang_id}}</td>
-                <td>{{data.utang_date}}</td>
+                <td>{{data.utang_date | date:'dd/MM/yy HH:mm:ss'}}</td>
                 <td>{{data.name}}</td>
                 <td>{{data.value}}</td>
                 <td>{{data.paid}}</td>
                 <td>{{data.balance}}</td>
-                <td>{{data.due_date}}</td>
+                <td>{{data.due_date | date:'dd/MM/yy'}}</td>
                 <td>
                   <a ng-click="bayarHutang(data.restock_id,data.customer_id,data.value)">Bayar Hutang</a>
                 </td>

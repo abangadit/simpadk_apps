@@ -183,10 +183,10 @@ angular
 	.controller('CustomerHargaCtrl', ['$timeout','$rootScope','$scope', '$http','$state','$window','CustomerService', function ($timeout,$rootScope,$scope,$http,$state,$window,CustomerService) {
 		var page = 1;
 
-    $scope.back_prev = function(){
-      console.log("back");
-      $window.history.back();
-    }
+		$scope.back_prev = function(){
+		console.log("back");
+		$window.history.back();
+		}
 
 		$scope.getPrices = function(){
 			$rootScope.isLoading = true;

@@ -78,6 +78,7 @@ angular
 		}
 		if($scope.reportType=='stock'){
 			$scope.reportTitle="Laporan Stock";
+			$scope.reportPeriod="";
 			$scope.columns=["Tanggal Stok","Merk","Produk","Stok"];
 			$scope.reportStock();
 		}

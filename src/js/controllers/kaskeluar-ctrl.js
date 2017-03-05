@@ -112,7 +112,7 @@ angular
   					bayar_date:$scope.postData.date,
   					restock_id:$rootScope.order_id,
   					value_bayar:$scope.postData.jumlah_bayar,
-            remarks:"",
+            remarks:$scope.postData.remarks,
   					key:api_key
   				},
   				transformRequest: function(obj) {
