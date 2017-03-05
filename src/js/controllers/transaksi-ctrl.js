@@ -60,11 +60,18 @@
         $scope.total = 0;
       }
 
+      //delete cart item
+      $scope.deleteItem = function(){
+        console.log("deleteItem");
+        
+      }
+
       //tampilkan popup order
   		$scope.order_popup = function(size,id,name,price,stock){
   			productService.product_id=id;
     		productService.product_name=name;
     		productService.product_price=price;
+        productService.product_stock=stock;
 
         //alert(name+" "+productService.product_price);
         if(stock>0){
@@ -345,11 +352,14 @@
       $scope.productPrice = productService.product_price;
       $scope.productName = productService.product_name;
       $scope.productID= productService.product_id;
+      $scope.productStock= productService.product_stock;
   		$scope.postData = {};
 
   		$scope.ok = function () {
         if($scope.postData.qty==0 || typeof $scope.postData.qty === "undefined") {
           alert("Quantitiy Tidak Boleh Kosong ! ");
+        }else if($scope.postData.qty > productService.product_stock){
+          alert("Quantitiy Tidak Boleh Melebihi Stok ! ");
         }else{
           productService.total = $scope.productPrice;
           cartService.updateForm(angular.copy({

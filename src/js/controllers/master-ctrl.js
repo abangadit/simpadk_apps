@@ -20,6 +20,8 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
 
     api_key = window.localStorage['apikey'];
 
+    //alert($scope.isAdmin+" "+$scope.isKasir+" "+$scope.isMarketing+" ");
+
 
     $rootScope.isLoading = false;
     var mobileView = 992;
@@ -88,7 +90,6 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
           if(response.data=="Invalid user/password"){
             alert(response.data);
           }else{
-            alert($scope.user_level);
             //user level 1 = administrator, 2 = penjaga toko, 3 = marketing / pemilik toko
             $scope.isLogin = true;
             window.localStorage['isLogin'] = true;
@@ -103,23 +104,35 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
             $scope.apikey = window.localStorage['apikey'];
             $scope.isLogin = window.localStorage['isLogin'];
 
-            $scope.isAdmin = false;
-            $scope.isKasir = false;
-            $scope.isMarketing = false;
+            // $rootScope.isAdmin = false;
+            // $rootScope.isKasir = false;
+            // $rootScope.isMarketing = false;
 
             if($scope.user_level==1){
               $scope.isAdmin = true;
+              $scope.isKasir = false;
+              $scope.isMarketing = false;
+              alert("ADMIN");
             }
             if($scope.user_level==2){
               $scope.isKasir = true;
+              $scope.isAdmin = false;
+              $scope.isMarketing = false;
+              alert("KASIR");
             }
             if($scope.user_level==3){
               $scope.isMarketing = true;
+              $scope.isAdmin = false;
+              $scope.isKasir = false;
+              alert("MARKETING");
             }
 
 
             api_key = window.localStorage['apikey'];
           }
+
+
+          //alert($scope.isAdmin+" "+$scope.isKasir+" "+$scope.isMarketing+" ");
 
 
 			  }, function errorCallback(response) {

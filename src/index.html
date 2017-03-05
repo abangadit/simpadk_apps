@@ -34,6 +34,10 @@
 
   <div ng-hide="isLogin" id="content-wrapper">
     <style>
+    .hidden_menu{
+      display: none;
+      visibility: hidden;
+    }
     .form-signin
     {
         max-width: 330px;
@@ -138,10 +142,10 @@
 
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
-      <ul class="sidebar" class="hidden_menu" ng-show="isAdmin" ng-hide="isAdmin">
+      <ul class="sidebar" class="hidden_menu" ng-show="isAdmin">
         <li class="sidebar-main">
           <a ng-click="toggleSidebar()">
-            Dashboard
+            Administrator
             <span class="menu-icon glyphicon glyphicon-transfer"></span>
           </a>
         </li>
@@ -187,10 +191,10 @@
           <a class="maju_dikit" href="#/master_supplier">Data Supplier </a>
         </li>
       </ul>
-      <ul class="sidebar" class="hidden_menu" ng-show="isKasir" ng-hide="isKasir">
+      <ul class="sidebar" class="hidden_menu" ng-show="isKasir">
         <li class="sidebar-main">
           <a ng-click="toggleSidebar()">
-            Dashboard
+            Kasir
             <span class="menu-icon glyphicon glyphicon-transfer"></span>
           </a>
         </li>
@@ -205,10 +209,10 @@
           <a href="#/kas_masuk">Kas Masuk <span class="menu-icon fa fa-money"></span></a>
         </li>
       </ul>
-      <ul class="sidebar" class="hidden_menu" ng-show="isMarketing" ng-hide="isMarketing">
+      <ul class="sidebar" class="hidden_menu" ng-show="isMarketing">
         <li class="sidebar-main">
           <a ng-click="toggleSidebar()">
-            Dashboard
+            Marketing
             <span class="menu-icon glyphicon glyphicon-transfer"></span>
           </a>
         </li>
