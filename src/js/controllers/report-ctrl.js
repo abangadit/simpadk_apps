@@ -66,14 +66,14 @@ angular
 			$scope.reportTitle="Laporan Penjualan";
 			$scope.reportPeriod="Periode " + $scope.date_from + " hingga " + $scope.date_to;
 			$scope.reportParameter="Customer";
-			$scope.columns=["Tgl. Order","Customer","Merk","Produk","Harga Customer","Qty","Subtotal","Pembayaran","Jatuh Tempo"];
+			$scope.columns=["Tgl. Order","No. Penjualan","Customer","Merk","Produk","Harga Customer","Qty","Subtotal","Pembayaran","Jatuh Tempo"];
 			$scope.reportOrder();
 		}
 		if($scope.reportType=='restock'){
 			$scope.reportTitle="Laporan Restock";
 			$scope.reportPeriod="Periode " + $scope.date_from + " hingga " + $scope.date_to;
 			$scope.reportParameter="Supplier";
-			$scope.columns=["Tgl. Restock","Supplier","Merk","Produk","Harga Supplier","Qty","Subtotal","Pembayaran","Jatuh Tempo"];
+			$scope.columns=["Tgl. Restock","No. Restock","Supplier","Merk","Produk","Harga Supplier","Qty","Subtotal","Pembayaran","Jatuh Tempo"];
 			$scope.reportRestock();
 		}
 		if($scope.reportType=='stock'){
@@ -227,10 +227,10 @@ angular
 					var columnsIn = response.data[0]; 
 					$scope.colname=[];
 					$scope.sumname=[];
-					$scope._colspan=5;
+					$scope._colspan=6;
 					
 					for(var key in columnsIn){
-						if(key!="customer_id" && key!="order_id"){
+						if(key!="customer_id"){
 							if(key=="totalgrand_total"||key=="totalquantity"){
 								$scope.sumname.push(key);
 							}else{
@@ -280,10 +280,10 @@ angular
 					var columnsIn = response.data[0]; 
 					$scope.colname=[];
 					$scope.sumname=[];
-					$scope._colspan=5;
+					$scope._colspan=6;
 					
 					for(var key in columnsIn){
-						if(key!="supplier_id" && key!="restock_id"){
+						if(key!="supplier_id"){
 							if(key=="totalgrand_total"||key=="totalquantity"){
 								$scope.sumname.push(key);
 							}else{
