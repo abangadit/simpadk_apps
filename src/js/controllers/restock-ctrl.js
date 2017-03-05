@@ -53,7 +53,7 @@
   		});
 
       //kosongkan cart
-      $scope.emptyCart = function(){
+      $rootScope.emptyCart = function(){
         console.log("kosongkan");
         cartService.clearForm();
         $scope.cart = cartService.getForm();
@@ -107,9 +107,8 @@
 
       //proses checkout
   		$scope.checkout = function(){
-        $scope.postData.isdebt = 0;
-        if(typeof $scope.postData.isdebt !== "undefined"){
-          $scope.postData.isdebt = 1;
+        if(typeof $scope.postData.isdebt === "undefined"){
+          $scope.postData.isdebt = 0;
         }
 
         if(typeof $scope.postData.date === "undefined"){
@@ -133,13 +132,13 @@
     				data 	 : {
     					restock_id:0,
     					restock_date:year+"-"+monthIndex+"-"+day,
-    					user_id:1,
+    					user_id:$scope.user_id,
     					supplier_id:$rootScope.supplier_id,
     					total:$scope.total,
     					discount:0,
     					grand_total:$scope.total,
-              due_date:$scope.postData.date,
-              isdebt:$scope.postData.isdebt,
+              due_date:$scope.postData.isdebt?$scope.postData.date:"0000-00-00",
+              isdebt:$scope.postData.isdebt?1:0,
     					key:api_key
     				},
     				transformRequest: function(obj) {
@@ -217,6 +216,17 @@
             $rootScope.isLoading = false;
             alert("Stock Berhasil Ditambahkan");
             //open_popup_transaksi('lg');
+            $rootScope.emptyCart();
+            $rootScope.isLoading = true;
+            $http.get(base_url+"api/"+api_key+"/products/0/"+page)
+            .then(function(response) {
+              $timeout( function(){
+                    $rootScope.isLoading = false;
+                  }, 1000);
+
+              console.log(response);
+              $scope.data_product = response.data;
+            });
           }, 1000);
         }
 
@@ -312,6 +322,7 @@
             $rootScope.nama_customer = response.data[x].name;
             $rootScope.alamat_customer = response.data[x].address;
             $rootScope.telp_customer = response.data[x].phone_no;
+            $rootScope.emptyCart();
           }
     		});
       }

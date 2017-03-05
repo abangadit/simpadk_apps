@@ -39,7 +39,6 @@
 
 
 
-
       //get products katalog
   		$rootScope.isLoading = true;
   		$http.get(base_url+"api/"+api_key+"/products/0/"+page)
@@ -53,7 +52,7 @@
   		});
 
       //kosongkan cart
-      $scope.emptyCart = function(){
+      $rootScope.emptyCart = function(){
         console.log("kosongkan");
         cartService.clearForm();
         $scope.cart = cartService.getForm();
@@ -118,7 +117,7 @@
 
       //proses checkout
   		$scope.checkout = function(){
-        $scope.postData.iscredit = 0;
+        console.log("iscredit",$scope.postData.iscredit)
         var date = new Date();
         var day = date.getDate();
         var monthIndex = date.getMonth();
@@ -126,8 +125,8 @@
 
         console.log(year+" "+monthIndex+" "+day);
 
-        if(typeof $scope.postData.iscredit !== "undefined"){
-          $scope.postData.iscredit = 1;
+        if(typeof $scope.postData.iscredit === "undefined"){
+          $scope.postData.iscredit = 0;
         }
 
         if(typeof $scope.postData.date === "undefined"){
@@ -151,16 +150,16 @@
     				data 	 : {
     					order_id:0,
     					order_date:year+"-"+(monthIndex+1)+"-"+day,
-    					user_id:1,
+    					user_id:$scope.user_id,
     					customer_id:$rootScope.customer_id,
     					total:$scope.total,
     					discount:0,
     					grand_total:$scope.total,
-    					delivery_date:"",
+    					delivery_date:"0000-00-00",
     					isdelivered:0,
     					remarks:"",
-              due_date:$scope.postData.date,
-              iscredit:$scope.postData.iscredit,
+              due_date:$scope.postData.iscredit?$scope.postData.date:"0000-00-00",
+              iscredit:$scope.postData.iscredit?1:0,
     					key:api_key
     				},
     				transformRequest: function(obj) {
@@ -234,6 +233,17 @@
           $timeout( function(){
             $rootScope.isLoading = false;
             alert("Order Berhasil Dibuat");
+            $rootScope.emptyCart();
+            $rootScope.isLoading = true;
+            $http.get(base_url+"api/"+api_key+"/products/customer/"+$rootScope.customer_id+"/0")
+            .then(function(response) {
+              $timeout( function(){
+                    $rootScope.isLoading = false;
+                  }, 500);
+
+      			console.log(response);
+      			$rootScope.data_product = response.data;
+      		});
             open_popup_transaksi('lg');
           }, 1000);
         }
@@ -246,6 +256,7 @@
   	        size: size,
   	        resolve: {
   	            items: function () {
+                  console.log("items",$scope.items)
   	                return $scope.items;
   	            }
   	        }
@@ -331,6 +342,7 @@
             $rootScope.nama_customer = response.data[x].name;
             $rootScope.alamat_customer = response.data[x].address;
             $rootScope.telp_customer = response.data[x].phone_no;
+            $rootScope.emptyCart();
           }
 
           //get products katalog
@@ -345,6 +357,7 @@
       			$rootScope.data_product = response.data;
       		});
     		});
+        
       }
 
   	}])

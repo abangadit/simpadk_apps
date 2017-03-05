@@ -9,10 +9,12 @@
           <div class="col-md-9 layout_item">
             <div class="header_transaksi"> Item </div>
               <div class="item_product" ng-repeat="data in data_product" ng-click="order_popup('sm',data.product_id,data.product_nama,data.default_price)">
-                <div class="item_desc">
+                <div class="item_desc" ng-class="{'item_desc_zero':data.stock<=data.min_stock}">
                   {{data.merk_nama}}<br>
                   {{data.product_nama}}<br>
                   {{data.default_price | currency:"Rp.":0}}
+                <br>
+                  <label>Stok: {{data.stock}} | minimum: {{data.min_stock}}</label>
                 </div>
               </div>
           </div>
@@ -26,9 +28,9 @@
                 No Telp : {{telp_customer}}<br>
                 Total : {{total | currency:"Rp.":0}}<br>
                 <input type="checkbox" ng-model="postData.isdebt"><label style="margin-left:10px;">Pembayaran Tempo?</label>
-                <datepicker date-format="yyyy-MM-dd" selector="form-control">
+                <datepicker date-format="yyyy-MM-dd" selector="form-control" ng-if="postData.isdebt">
                     <div class="input-group">
-                        <input class="form-control" placeholder="Choose a date" ng-model="postData.date"/>
+                        <input class="form-control" placeholder="Pilih tanggal pembayaran" ng-model="postData.date"/>
                         <span class="input-group-addon" style="cursor: pointer">
                         <i class="fa fa-lg fa-calendar"></i>
                         </span>

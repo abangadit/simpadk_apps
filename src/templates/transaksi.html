@@ -30,9 +30,9 @@
               No Telp : {{telp_customer}}<br>
               Total : {{total | currency:"Rp.":0}}<br>
               <input type="checkbox" ng-model="postData.iscredit"><label style="margin-left:10px;">Pembayaran Tempo?</label>
-              <datepicker date-format="yyyy-MM-dd" selector="form-control">
+              <datepicker date-format="yyyy-MM-dd" selector="form-control" ng-if="postData.iscredit">
                   <div class="input-group">
-                      <input class="form-control" placeholder="Choose a date" ng-model="postData.date"/>
+                      <input class="form-control" placeholder="Pilih tanggal pembayaran" ng-model="postData.date"/>
                       <span class="input-group-addon" style="cursor: pointer">
                       <i class="fa fa-lg f1a-calendar"></i>
                       </span>

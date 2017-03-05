@@ -14,6 +14,7 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
     $scope.isLogin = window.localStorage['isLogin'];
     $scope.user_nama = window.localStorage['user_nama'];
     $scope.user_level = window.localStorage['user_level'];
+    $scope.user_id = window.localStorage['user_id'];
     $scope.expired_date = window.localStorage['expired_date'];
     $scope.apikey = window.localStorage['apikey'];
     $scope.isLogin = window.localStorage['isLogin'];
@@ -97,12 +98,15 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
             window.localStorage['apikey'] = response.data[0].apikey;
             window.localStorage['user_level'] = response.data[0].user_level;
             window.localStorage['expired_date'] = response.data[0].expired_date;
+            window.localStorage['user_id'] = response.data[0].user_id;
+            
 
             $scope.user_nama = window.localStorage['user_nama'];
             $scope.user_level = window.localStorage['user_level'];
             $scope.expired_date = window.localStorage['expired_date'];
             $scope.apikey = window.localStorage['apikey'];
             $scope.isLogin = window.localStorage['isLogin'];
+            $scope.user_id = window.localStorage['user_id'];
 
             // $rootScope.isAdmin = false;
             // $rootScope.isKasir = false;
