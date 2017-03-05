@@ -142,7 +142,7 @@
 
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
-      <ul class="sidebar" class="hidden_menu" ng-show="isAdmin">
+      <ul class="sidebar" class="hidden_menu" ng-show="user_level==1">
         <li class="sidebar-main">
           <a ng-click="toggleSidebar()">
             Administrator
@@ -191,7 +191,7 @@
           <a class="maju_dikit" href="#/master_supplier">Data Supplier </a>
         </li>
       </ul>
-      <ul class="sidebar" class="hidden_menu" ng-show="isKasir">
+      <ul class="sidebar" class="hidden_menu" ng-show="user_level==2">
         <li class="sidebar-main">
           <a ng-click="toggleSidebar()">
             Kasir
@@ -209,7 +209,7 @@
           <a href="#/kas_masuk">Kas Masuk <span class="menu-icon fa fa-money"></span></a>
         </li>
       </ul>
-      <ul class="sidebar" class="hidden_menu" ng-show="isMarketing">
+      <ul class="sidebar" class="hidden_menu" ng-show="user_level==3">
         <li class="sidebar-main">
           <a ng-click="toggleSidebar()">
             Marketing
