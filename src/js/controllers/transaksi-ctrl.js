@@ -16,6 +16,9 @@
                updateForm: function(item) {
                    this.form.push(item);
                },
+               deleteForm: function(index) {
+                   this.form.splice(index,1);
+               },
                clearForm: function() {
                    this.form = [];
                }
@@ -60,9 +63,16 @@
       }
 
       //delete cart item
-      $scope.deleteItem = function(){
+      $scope.deleteItem = function(index){
         console.log("deleteItem");
-        
+        cartService.deleteForm(index);
+
+
+        $scope.cart = cartService.getForm();
+        $scope.total = 0;
+        for (var i = 0; i < $scope.cart.length; i++) {
+          $scope.total += $scope.cart[i].price;
+        }
       }
 
       //tampilkan popup order
@@ -357,7 +367,7 @@
       			$rootScope.data_product = response.data;
       		});
     		});
-        
+
       }
 
   	}])
