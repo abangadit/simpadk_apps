@@ -1,7 +1,4 @@
-<div class="row" ng-controller="ProductDetailCtrl">
-  <div class="col-lg-12">
-    <rd-widget>
-      <rd-widget-body classes=" padding">
+<div class="row" ng-controller="ProductDetailCtrl"><div class="col-lg-12"><rd-widget><rd-widget-body classes=" padding">
         <div>
           <form ng-submit="editProduct()">
             <div class="form-group">
@@ -10,14 +7,12 @@
             </div>
             <div class="form-group">
               <label >Merk</label>
-              <!-- <input type="text" class="form-control" ng-value="data.merk_nama"> -->
               <select class="form-control" ng-model="postData.merk_id" ng-options="merk.merk_id as merk.merk_nama for merk in data_merk">
                 <option value="">Pilih Merk</option>
               </select>
             </div>
             <div class="form-group">
               <label >Satuan</label>
-              <!-- <input type="text" class="form-control" ng-value="data.satuan_nama"> -->
               <select class="form-control" ng-model="postData.satuan_id" ng-options="satuan.satuan_id as satuan.satuan_nama for satuan in data_satuan">
                 <option value="">Pilih Satuan</option>
               </select>
@@ -30,7 +25,6 @@
               <label >Harga Supplier</label>
               <input type="text" class="form-control" ng-model="postData.supplier_price">
             </div>
-            
             <div class="form-group">
               <label >Stok</label>
               <input type="text" class="form-control" ng-model="postData.stock">
@@ -42,7 +36,6 @@
             <div class="form-group">
               <label >Keterangan</label>
               <input type="text" class="form-control" ng-model="postData.remarks">
-              
             </div>
             <button type="submit" class="btn btn-primary btn-lg">Update Produk</button>
             <button type="button" class="btn btn-default btn-lg" onclick="window.history.back()">Kembali</button>
@@ -50,5 +43,4 @@
       </rd-widget-body>
     </rd-widget>
   </div>
-  
 </div>

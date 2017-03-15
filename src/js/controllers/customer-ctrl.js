@@ -1,15 +1,10 @@
 /**
- * Alerts Controller
+ * Customer Controller
  */
 
-angular
-    .module('RDash')
-    .service('CustomerService', function () {
-
-    })
+angular.module('RDash').service('CustomerService', function () {})
 	.controller('CustomerCtrl', ['$timeout','$rootScope','$scope', '$http','$state','CustomerService', function ($timeout,$rootScope,$scope,$http,$state,CustomerService) {
 		var page = 1;
-
 		$scope.refreshCustomer = function(){
 			$rootScope.isLoading = true;
 			$http.get(base_url+"api/"+api_key+"/customers/0/"+page)
@@ -46,7 +41,6 @@ angular
 			$scope.customer_id = id;
 			$state.go('detail_customer');
 		};
-
 		$scope.deleteCustomer = function(id){
       console.log(base_url+"api/"+api_key+"/customers/"+id+"/0");
 			var r = confirm("Anda yakin ingin menghapus data ini?");
@@ -76,23 +70,17 @@ angular
 			}
 
 		};
-
 		$scope.priceCustomer = function(id){
 			CustomerService.customer_id=id;
 			$scope.customer_id = id;
 			$state.go('harga_customer');
 		};
-
 		$scope.refreshCustomer();
-
-
-
 	}])
 	.controller('CustomerDetailCtrl', ['$timeout','$rootScope','$scope', '$http','$state','CustomerService', function ($timeout,$rootScope,$scope,$http,$state,CustomerService) {
 		var page = 1;
 		$rootScope.isLoading = true;
 		$scope.postData = {};
-
 		$http.get(base_url+"api/"+api_key+"/customers/"+CustomerService.customer_id+"/"+page)
 		.then(function(response) {
 			$timeout( function(){
@@ -101,7 +89,6 @@ angular
 			console.log(response.data[0]);
 			$scope.postData = response.data[0];
 		});
-
 		$scope.editCustomer = function (){
 			$rootScope.isLoading = true;
 			$http({
@@ -140,9 +127,6 @@ angular
 	}])
 	.controller('CustomerAddCtrl', ['$timeout','$rootScope','$scope', '$http','$state','MerkService', function ($timeout,$rootScope,$scope,$http,$state,MerkService) {
 		$scope.postData = {};
-		//$rootScope.isLoading = true;
-		//load merk dropdown
-
 		$scope.submitCustomer = function (){
 			$rootScope.isLoading = true;
 
@@ -182,12 +166,10 @@ angular
 	}])
 	.controller('CustomerHargaCtrl', ['$timeout','$rootScope','$scope', '$http','$state','$window','CustomerService', function ($timeout,$rootScope,$scope,$http,$state,$window,CustomerService) {
 		var page = 1;
-
 		$scope.back_prev = function(){
-		console.log("back");
-		$window.history.back();
+		    console.log("back");
+		    $window.history.back();
 		}
-
 		$scope.getPrices = function(){
 			$rootScope.isLoading = true;
 			$http.get(base_url+"api/"+api_key+"/customerprices/"+CustomerService.customer_id+"/0/"+page)
@@ -226,7 +208,6 @@ angular
 			$scope.customer_id = id;
 			$state.go('detail_customer');
 		};
-
 		$scope.deletePrices = function(id){
       console.log(id);
 			var r = confirm("Anda yakin ingin menghapus data ini?");
@@ -260,7 +241,6 @@ angular
 	}])
   .controller('CustomerHargaAddCtrl', ['$timeout','$rootScope','$scope', '$http','$state','$window','CustomerService', function ($timeout,$rootScope,$scope,$http,$state,$window,CustomerService) {
 		var page = 1;
-
 		$scope.getProduct = function(){
 			$rootScope.isLoading = true;
       $http.get(base_url+"api/"+api_key+"/products/0/"+page)
@@ -287,7 +267,6 @@ angular
   			}
   		});
 		}
-
     $scope.submitCustomerPrices = function (){
 			$rootScope.isLoading = true;
       console.log(CustomerService.customer_id+" "+$scope.postData.product+" "+$scope.postData.price+" "+api_key);
@@ -323,8 +302,6 @@ angular
 		        alert("Terjadi Kesalahan, Ulangi ");
 			  });
 		}
-
-
 		$scope.getProduct();
 	}])
 

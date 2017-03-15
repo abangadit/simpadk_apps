@@ -2,17 +2,11 @@
  * Alerts Controller
  */
 
-angular
-    .module('RDash')
-    .service('KasKeluarCtrl', function () {
-
-    })
+angular.module('RDash').service('KasKeluarCtrl', function () {})
 	.controller('KasKeluarCtrl', ['$timeout','$rootScope','$scope', '$http','$state','$uibModal','KasKeluarCtrl', function ($timeout,$rootScope,$scope,$http,$state,$uibModal,$uibModalInstance,KasKeluarCtrl) {
 		var page = 1;
     $scope.postData = {};
-
     $rootScope.isLoading = true;
-
     $scope.getData = function(){
       console.log(base_url+"api/"+api_key+"/utang/0/"+page);
       $http({
@@ -60,7 +54,6 @@ angular
             alert("Terjadi Kesalahan, Ulangi ");
         });
     }
-
     $scope.getData();
     $scope.setpage=function(page_no){
 			console.log("gotopage",page_no);
@@ -68,7 +61,6 @@ angular
 			$scope.getData();
 
 		}
-
     $scope.bayarPiutang = function(order_id,customer_id){
       console.log("bayar piutang "+order_id);
       $rootScope.order_id = order_id;
@@ -90,11 +82,9 @@ angular
           size: "md",
       });
     }
-
     $scope.closeModal = function(){
       $rootScope.modalInstance.dismiss();
     };
-
 		$scope.submitKasKeluar = function(){
       if($scope.postData.jumlah_bayar > $rootScope.nominal_bayar){
         alert("Jumlah bayar tidak bisa lebih besar dari nominal Utang");

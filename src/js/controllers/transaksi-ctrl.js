@@ -2,11 +2,7 @@
  * Alerts Controller
  */
 
- angular
-     .module('RDash')
-     .service('productService', function () {
-
-     })
+ angular.module('RDash').service('productService', function () {})
      .service('cartService', function () {
        return {
                form: [],
@@ -37,11 +33,6 @@
       $scope.total = 0;
       $rootScope.customer_id = 0;
       $scope.postData = {};
-      //$scope.cart = $scope.sample_item;
-
-
-
-
       //get products katalog
   		$rootScope.isLoading = true;
   		$http.get(base_url+"api/"+api_key+"/products/0/"+page)
@@ -53,7 +44,6 @@
   			console.log(response);
   			$rootScope.data_product = response.data;
   		});
-
       //kosongkan cart
       $rootScope.emptyCart = function(){
         console.log("kosongkan");
@@ -61,7 +51,6 @@
         $scope.cart = cartService.getForm();
         $scope.total = 0;
       }
-
       //delete cart item
       $scope.deleteItem = function(index){
         console.log("deleteItem");
@@ -74,7 +63,6 @@
           $scope.total += $scope.cart[i].price;
         }
       }
-
       //tampilkan popup order
   		$scope.order_popup = function(size,id,name,price,stock){
   			productService.product_id=id;
@@ -89,14 +77,12 @@
           alert("Stok habis.");
         }
   		}
-
       $scope.hapus_customer = function (){
         $rootScope.nama_customer = "Pelanggan Biasa";
         $rootScope.alamat_customer = " - ";
         $rootScope.telp_customer = " - ";
         $rootScope.customer_id = 0;
       }
-
       //tampilkan popup pilih customer
       $scope.pilih_customer = function (){
         $rootScope.modalInstance = $uibModal.open({
@@ -104,7 +90,6 @@
             size: "md",
         });
       }
-
       function open_popup (size){
         $rootScope.modalInstance = $uibModal.open({
   	        templateUrl: 'templates/myModalContent.html',
@@ -124,7 +109,6 @@
   	        //$log.info('Modal dismissed at: ' + new Date());
   	    });
       }
-
       //proses checkout
   		$scope.checkout = function(){
         console.log("iscredit",$scope.postData.iscredit)
@@ -204,7 +188,6 @@
 
 
   		};
-
       function insert_order_item(order_id){
         console.log("insert order item after order created , order_id:"+order_id);
         for (var i = 0; i < $scope.cart.length; i++) {
@@ -259,7 +242,6 @@
         }
 
       }
-
       function open_popup_transaksi (size){
         $rootScope.modalInstance = $uibModal.open({
   	        templateUrl: 'templates/modal_print.html',
@@ -280,15 +262,9 @@
   	        //$log.info('Modal dismissed at: ' + new Date());
   	    });
       }
-
   	}])
   	.controller('TransaksiPrintCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {
       $scope.order_id = productService.order_id;
-      // $scope.nama_customer = productService.name;
-      // $scope.alamat_customer = productService.address;
-      // $scope.telp_customer = productService.phone_no;
-      //$scope.order_id = 29;
-      //alert($scope.order_id);
       $rootScope.isLoading = true;
   		$http.get(base_url+"api/"+api_key+"/orders/"+$scope.order_id)
   		.then(function(response) {
@@ -307,7 +283,6 @@
     		});
   			$scope.data_order = response.data;
   		});
-
       $scope.print = function(){
         var printContents = document.getElementById("print_nota").innerHTML;
         var popupWin = window.open('', '_blank', 'width=300,height=300');
@@ -315,7 +290,6 @@
         popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /></head><body onload="window.print()">' + printContents + '</body></html>');
         popupWin.document.close();
       }
-
   	}])
   	.controller('ModalCustomerCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {
       $rootScope.isLoading = true;
@@ -328,11 +302,9 @@
   			console.log(response);
   			$scope.data_customer = response.data;
   		});
-
       $rootScope.nama_customer = "";
       $rootScope.alamat_customer = "";
       $rootScope.telp_customer = "";
-
       $scope.submit_customer = function(){
         var dropdown_customer = $scope.postData.dropdown_customer;
         //alert(dropdown_customer);

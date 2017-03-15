@@ -2,12 +2,8 @@
  * Alerts Controller
  */
 
- angular
-     .module('RDash')
-     .service('productService', function () {
-
-     })
-     .service('cartService', function () {
+ angular.module('RDash').service('productService', function () {})
+    .service('cartService', function () {
        return {
                form: [],
                getForm: function() {
@@ -34,12 +30,6 @@
       $scope.total = 0;
       $rootScope.supplier_id = 0;
       $scope.postData = {};
-      //$scope.cart = $scope.sample_item;
-
-
-
-
-
       //get products katalog
   		$rootScope.isLoading = true;
   		$http.get(base_url+"api/"+api_key+"/products/0/"+page)
@@ -51,7 +41,6 @@
   			console.log(response);
   			$scope.data_product = response.data;
   		});
-
       //kosongkan cart
       $rootScope.emptyCart = function(){
         console.log("kosongkan");
@@ -59,7 +48,6 @@
         $scope.cart = cartService.getForm();
         $scope.total = 0;
       }
-
       //tampilkan popup order
   		$scope.order_popup = function(size,id,name,price){
         if($rootScope.supplier_id>0){
@@ -73,14 +61,12 @@
           alert("Pilih Supplier terlebih dahulu");
         }
   		}
-
       $scope.hapus_customer = function (){
         $rootScope.nama_customer = "";
         $rootScope.alamat_customer = " - ";
         $rootScope.telp_customer = " - ";
         $rootScope.supplier_id = 0;
       }
-
       //tampilkan popup pilih customer
       $scope.pilih_customer = function (){
         $rootScope.modalInstance = $uibModal.open({
@@ -88,7 +74,6 @@
             size: "md",
         });
       }
-
       function open_popup (size){
         $rootScope.modalInstance = $uibModal.open({
   	        templateUrl: 'templates/myModalContent.html',
@@ -108,7 +93,6 @@
   	        //$log.info('Modal dismissed at: ' + new Date());
   	    });
       }
-
       //proses checkout
   		$scope.checkout = function(){
         if(typeof $scope.postData.isdebt === "undefined"){
@@ -170,19 +154,6 @@
         }
 
       }
-  		$scope.checkout_debug = function(){
-        $scope.postData.isdebt = 0;
-        if(typeof $scope.postData.isdebt !== "undefined"){
-          $scope.postData.isdebt = 1;
-        }
-
-        if(typeof $scope.postData.date === "undefined"){
-          $scope.postData.date = "0000-00-00";
-        }
-        console.log($rootScope.supplier_id+" "+$scope.total+" "+$scope.postData.date+" "+$scope.postData.isdebt);
-
-  		};
-
       function insert_order_item(order_id){
         console.log("insert order item after order created , order_id:"+order_id);
         for (var i = 0; i < $scope.cart.length; i++) {
@@ -236,7 +207,6 @@
         }
 
       }
-
       function open_popup_transaksi (size){
         $rootScope.modalInstance = $uibModal.open({
   	        templateUrl: 'templates/modal_print.html',
@@ -256,7 +226,6 @@
   	        //$log.info('Modal dismissed at: ' + new Date());
   	    });
       }
-
   	}])
   	.controller('RestockPrintCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService','cartService','$uibModal', function ($timeout,$rootScope,$scope,$http,$state,productService,cartService,$uibModal,$log,$uibModalInstance) {
       $scope.order_id = productService.order_id;

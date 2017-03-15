@@ -1,21 +1,11 @@
-<div class="row" ng-controller="RestockCtrl">
-  <div class="col-lg-12">
-    <rd-widget>
-      <rd-widget-header icon="fa-tasks" title="Restock">
-      </rd-widget-header>
-      <rd-widget-body classes="">
-      <button type="button" class="btn btn-primary" ng-click="pilih_customer()">Pilih Supplier</button>
+<div class="row" ng-controller="RestockCtrl"><div class="col-lg-12"><rd-widget><rd-widget-header icon="fa-tasks" title="Restock"></rd-widget-header>
+      <rd-widget-body classes=""><button type="button" class="btn btn-primary" ng-click="pilih_customer()">Pilih Supplier</button>
         <div class="row layout_transaksi">
           <div class="col-md-9 layout_item">
             <div class="header_transaksi"> Item </div>
               <div class="item_product" ng-repeat="data in data_product" ng-click="order_popup('sm',data.product_id,data.product_nama,data.default_price)">
                 <div class="item_desc" ng-class="{'item_desc_zero':data.stock<=data.min_stock}">
-                  {{data.merk_nama}}<br>
-                  {{data.product_nama}}<br>
-                  {{data.default_price | currency:"Rp.":0}}
-                <br>
-                  <label>Stok: {{data.stock}} | minimum: {{data.min_stock}}</label>
-                </div>
+                  {{data.merk_nama}}<br>{{data.product_nama}}<br>{{data.default_price | currency:"Rp.":0}}<br><label>Stok: {{data.stock}} | minimum: {{data.min_stock}}</label></div>
               </div>
           </div>
           <form ng-submit="checkout()">
@@ -52,8 +42,6 @@
           </div>
         </div>
       </form>
-
-
       </rd-widget-body>
     </rd-widget>
   </div>

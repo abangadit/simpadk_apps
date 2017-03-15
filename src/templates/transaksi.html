@@ -1,44 +1,23 @@
-<div class="row" ng-controller="TransaksiCtrl">
-  <div class="col-lg-12">
-    <rd-widget>
-      <rd-widget-header icon="fa-tasks" title="Transaksi">
-      </rd-widget-header>
-      <rd-widget-body classes="">
-      <button type="button" class="btn btn-primary" ng-click="pilih_customer()">Pilih Customer</button>
-      <button type="button" class="btn btn-danger" ng-click="hapus_customer()">Pelanggan Biasa</button>
+<div class="row" ng-controller="TransaksiCtrl"><div class="col-lg-12"><rd-widget><rd-widget-header icon="fa-tasks" title="Transaksi"></rd-widget-header>
+      <rd-widget-body classes=""><button type="button" class="btn btn-primary" ng-click="pilih_customer()">Pilih Customer</button><button type="button" class="btn btn-danger" ng-click="hapus_customer()">Pelanggan Biasa</button>
         <div class="row layout_transaksi">
           <div class="col-md-9 layout_item">
             <div class="header_transaksi"> Item </div>
               <div class="item_product" ng-repeat="data in data_product" ng-click="order_popup('sm',data.product_id,data.product_nama,data.default_price,data.stock)">
-                <div class="item_desc" ng-class="{'item_desc_zero':data.stock==0}">
-                  {{data.merk_nama}}<br>
-                  {{data.product_nama}}<br>
-                  <label ng-if="data.customer_price != null ">{{data.customer_price | currency:"Rp.":0}}</label>
-                  <label ng-if="data.customer_price == null ">{{data.default_price | currency:"Rp.":0}}</label>
-                  <br>
-                  <label>Stok: {{data.stock}}</label>
+                <div class="item_desc" ng-class="{'item_desc_zero':data.stock==0}">{{data.merk_nama}}<br>{{data.product_nama}}<br><label ng-if="data.customer_price != null ">{{data.customer_price | currency:"Rp.":0}}</label><label ng-if="data.customer_price == null ">{{data.default_price | currency:"Rp.":0}}</label>
+                  <br><label>Stok: {{data.stock}}</label>
                 </div>
               </div>
-          </div>
-          <form ng-submit="checkout()">
+          </div><form ng-submit="checkout()">
           <div class="col-md-3 layout_checkout">
             <div class="header_transaksi"> Keranjang </div>
             <div class="body_transaksi">
-              <div style="text-align: center;width:100%;border-bottom: 1px solid #dadada;"><h4>Customer</h4></div>
-              Nama : {{nama_customer}}<br>
-              Alamat : {{alamat_customer}}<br>
-              No Telp : {{telp_customer}}<br>
-              Total : {{total | currency:"Rp.":0}}<br>
+              <div style="text-align: center;width:100%;border-bottom: 1px solid #dadada;"><h4>Customer</h4></div>Nama : {{nama_customer}}<br>Alamat : {{alamat_customer}}<br>No Telp : {{telp_customer}}<br>Total : {{total | currency:"Rp.":0}}<br>
               <input type="checkbox" ng-model="postData.iscredit"><label style="margin-left:10px;">Pembayaran Tempo?</label>
               <datepicker date-format="yyyy-MM-dd" selector="form-control" ng-if="postData.iscredit">
-                  <div class="input-group">
-                      <input class="form-control" placeholder="Pilih tanggal pembayaran" ng-model="postData.date"/>
-                      <span class="input-group-addon" style="cursor: pointer">
-                      <i class="fa fa-lg f1a-calendar"></i>
-                      </span>
+                  <div class="input-group"><input class="form-control" placeholder="Pilih tanggal pembayaran" ng-model="postData.date"/><span class="input-group-addon" style="cursor: pointer"><i class="fa fa-lg f1a-calendar"></i></span>
                   </div>
-              </datepicker>
-              <hr>
+              </datepicker><hr>
               <div class="row" ng-repeat="item in cart">
                 <div class="col-md-12">
                   <div class="col-md-9" style="border-bottom: 1px solid #dadada;padding:5px 0px;font-size:11px;color:#000;">{{item.name}} ( {{item.qty}} ) {{item.price | currency:"Rp.":0}}

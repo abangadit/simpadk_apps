@@ -2,17 +2,11 @@
  * Alerts Controller
  */
 
-angular
-    .module('RDash')
-    .service('KasMasukService', function () {
-
-    })
+angular.module('RDash').service('KasMasukService', function () {})
 	.controller('KasMasukCtrl', ['$timeout','$rootScope','$scope', '$http','$state','$uibModal','KasMasukService', function ($timeout,$rootScope,$scope,$http,$state,$uibModal,$uibModalInstance,KasMasukService) {
 		var page = 1;
     $scope.postData = {};
-
     $rootScope.isLoading = true;
-
     $scope.getData = function(){
       console.log(base_url+"api/"+api_key+"/piutang/0/"+page);
       $http({
@@ -57,12 +51,10 @@ angular
           $timeout( function(){
               $rootScope.isLoading = false;
             }, 1000);
-            alert("Terjadi Kesalahan, Ulangi ");
+            //alert("Terjadi Kesalahan, Ulangi "+response);
         });
     }
-
     $scope.getData();
-
     $scope.setpage=function(page_no){
 			console.log("gotopage",page_no);
 			page=page_no;
@@ -80,11 +72,9 @@ angular
           size: "md",
       });
     }
-
     $scope.closeModal = function(){
       $rootScope.modalInstance.dismiss();
     };
-
 		$scope.submitKasMasuk = function(){
 
       if($scope.postData.jumlah_bayar > $rootScope.nominal_utang){
@@ -94,6 +84,7 @@ angular
       }else if($scope.postData.jumlah_bayar==null){
         alert("Jumlah bayar tidak boleh kosong");
       }else{
+				console.log($scope.postData.date+" "+$rootScope.order_id+" "+$scope.postData.jumlah_bayar+" "+$scope.postData.remarks);
         $rootScope.isLoading = true;
         $http({
   				method: 'POST',

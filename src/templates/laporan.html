@@ -1,10 +1,7 @@
 
-<div ng-controller="ReportCtrl">
-  <div class="row" >
-  <div class="col-lg-12">
+<div ng-controller="ReportCtrl"><div class="row" ><div class="col-lg-12">
     <form class="padding">
       <div class="form-group col-md-2">
-
         <label>Pilih Jenis Laporan</label>
         <select class="form-control" ng-model="reportType">
           <option value="stock">Stock</option>
@@ -13,10 +10,8 @@
           <option value="piutang">Piutang</option>
           <option value="order">Order</option>
           <option value="cashflow">Aliran Kas</option>
-
         </select>
       </div>
-
       <div class="form-group col-md-3" ng-show="reportType!='stock'">
         <label>Dari Tanggal</label>
         <datepicker date-format="yyyy-MM-dd" selector="date1">
@@ -65,11 +60,9 @@
       <rd-widget-body>
         <rd-widget-body classes=" no-padding">
           <button class="btn btn-primary" type="button" ng-click="print()">Print</button>
-
           <div class="table-responsive" id="print_report">
             <h4>{{reportTitle}}</h4>
             <h5>{{reportPeriod}}</h5>
-
             <table class="table">
               <thead>
 								<tr>
@@ -80,8 +73,6 @@
                 <tr ng-repeat="rowData in reportData">
                   <td ng-repeat="col in colname">{{rowData[col]}}</td>
                 </tr>
-                <!--<tr><td>RDVMPC001</td><td>238.103.133.37</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>-->
-
               </tbody>
               <tfoot>
                 <tr ng-show="sumname.length>0">

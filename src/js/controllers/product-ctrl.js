@@ -2,11 +2,7 @@
  * Alerts Controller
  */
 
-angular
-    .module('RDash')
-    .service('productService', function () {
-
-    })
+angular.module('RDash').service('productService', function () {})
 	.controller('ProductCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService', function ($timeout,$rootScope,$scope,$http,$state,productService) {
 		var page = 1;
 		$scope.refreshProduct = function(){
@@ -22,7 +18,7 @@ angular
 			$scope.page_count=response.data[0].page_count;
 			$scope.page_next=page>$scope.page_count?$scope.page_count:page+1;
 			$scope.page_prev=page<=1?1:page-1;
-			
+
 			console.log("pagecount:",$scope.page_count);
 			$scope.pages = [];
 			var i=1;
@@ -30,7 +26,7 @@ angular
 				if(i>=page-5 && i<=page+5){
 					$scope.pages.push(page==i?"["+i+"]":i);
 				}
-				
+
 
 			}
 		});
@@ -45,7 +41,7 @@ angular
 			console.log("gotopage",page_no);
 			page=page_no;
 			$scope.refreshProduct();
-			
+
 		}
 		$scope.deleteProduct = function(id){
 			var r = confirm("Anda yakin ingin menghapus data ini?");
@@ -63,7 +59,7 @@ angular
 						$rootScope.isLoading = false;
 					}, 1000);
 					alert("Data berhasil dihapus.");
-					
+
 					$state.go('master_product');
 					$scope.refreshProduct();
 					}, function errorCallback(response) {
@@ -73,18 +69,15 @@ angular
 					alert("Terjadi Kesalahan, Ulangi ");
 				});
 			}
-			
+
 		};
 		$scope.refreshProduct();
-		
-
 	}])
 
 	.controller('ProductDetailCtrl', ['$timeout','$rootScope','$scope', '$http','$state','productService', function ($timeout,$rootScope,$scope,$http,$state,productService) {
 		var page = 1;
 		$rootScope.isLoading = true;
 		$scope.postData = {};
-			
 		$http.get(base_url+"api/"+api_key+"/products/"+productService.products_id+"/"+page)
 		.then(function(response) {
 			$timeout( function(){
@@ -93,7 +86,6 @@ angular
 			console.log("get product",response);
 			$scope.postData = response.data[0];
 		});
-
 		$http.get(base_url+"api/"+api_key+"/brands/")
 		.then(function(response) {
 			console.log(response);
@@ -109,7 +101,6 @@ angular
 				$scope.data_satuan = response.data;
 			});
 		});
-
 		$scope.editProduct = function (){
 			$rootScope.isLoading = true;
 			console.log("edit...")
@@ -160,7 +151,6 @@ angular
 		.then(function(response) {
 			console.log(response);
 			$scope.data_merk = response.data;
-
 			//load satuan dropdown
 			$http.get(base_url+"api/"+api_key+"/units/")
 			.then(function(response) {
@@ -171,8 +161,6 @@ angular
 				$scope.data_satuan = response.data;
 			});
 		});
-
-
 		$scope.submitProduct = function (){
 			$rootScope.isLoading = true;
 

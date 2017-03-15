@@ -5,9 +5,7 @@ var base_url = "http://localhost:3000/";
 var base_url_main = "http://localhost:6699/";
 //var api_key = "c89ba5b91d1ed6642892fea1431cba28731680"; //api key sementara (belum ada login)
 var api_key;
-
-angular.module('RDash')
-    .controller('MasterCtrl', ['$rootScope','$scope', '$cookieStore', '$http','$timeout', MasterCtrl]);
+angular.module('RDash').controller('MasterCtrl', ['$rootScope','$scope', '$cookieStore', '$http','$timeout', MasterCtrl]);
 
 function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
     $scope.postData = {};
@@ -18,19 +16,12 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
     $scope.expired_date = window.localStorage['expired_date'];
     $scope.apikey = window.localStorage['apikey'];
     $scope.isLogin = window.localStorage['isLogin'];
-
     api_key = window.localStorage['apikey'];
-
-    //alert($scope.isAdmin+" "+$scope.isKasir+" "+$scope.isMarketing+" ");
-
-
     $rootScope.isLoading = false;
     var mobileView = 992;
-
     $scope.getWidth = function() {
         return window.innerWidth;
     };
-
     $scope.$watch($scope.getWidth, function(newValue, oldValue) {
         if (newValue >= mobileView) {
             if (angular.isDefined($cookieStore.get('toggle'))) {
@@ -43,28 +34,13 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
         }
 
     });
-
     $scope.toggleSidebar = function() {
         $scope.toggle = !$scope.toggle;
         $cookieStore.put('toggle', $scope.toggle);
     };
-
     window.onresize = function() {
         $scope.$apply();
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
     $scope.submitLogin = function (){
       $rootScope.isLoading = true;
       var link = base_url+"login";
@@ -99,7 +75,7 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
             window.localStorage['user_level'] = response.data[0].user_level;
             window.localStorage['expired_date'] = response.data[0].expired_date;
             window.localStorage['user_id'] = response.data[0].user_id;
-            
+
 
             $scope.user_nama = window.localStorage['user_nama'];
             $scope.user_level = window.localStorage['user_level'];
@@ -147,7 +123,6 @@ function MasterCtrl($rootScope,$scope,$cookieStore,$http,$timeout) {
 			  });
 
 		};
-
     $scope.logout = function(){
         $scope.isLogin = false;
         localStorage.clear();

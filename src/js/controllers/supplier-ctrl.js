@@ -2,11 +2,7 @@
  * Alerts Controller
  */
 
-angular
-    .module('RDash')
-    .service('SupplierService', function () {
-
-    })
+angular.module('RDash').service('SupplierService', function () {})
 	.controller('SupplierCtrl', ['$timeout','$rootScope','$scope', '$http','$state','SupplierService', function ($timeout,$rootScope,$scope,$http,$state,SupplierService) {
 		var page = 1;
 		$scope.refreshSupplier = function(){
@@ -16,13 +12,13 @@ angular
 				$timeout( function(){
 					$rootScope.isLoading = false;
 				}, 1000);
-				
+
 				console.log(response);
 				$scope.data_supplier = response.data;
 				$scope.page_count=response.data[0].page_count;
 				$scope.page_next=page>$scope.page_count?$scope.page_count:page+1;
 				$scope.page_prev=page<=1?1:page-1;
-				
+
 				console.log("pagecount:",$scope.page_count);
 				$scope.pages = [];
 				var i=1;
@@ -30,7 +26,7 @@ angular
 					if(i>=page-5 && i<=page+5){
 						$scope.pages.push(page==i?"["+i+"]":i);
 					}
-					
+
 
 				}
 			});
@@ -39,14 +35,13 @@ angular
 			console.log("gotopage",page_no);
 			page=page_no;
 			$scope.refreshSupplier();
-			
+
 		}
 		$scope.detailSupplier = function(id){
 			SupplierService.Supplier_id=id;
 			$scope.Supplier_id = id;
 			$state.go('detail_supplier');
 		};
-		
 		$scope.deleteSupplier = function(id){
 			var r = confirm("Anda yakin ingin menghapus data ini?");
 			var del = false;
@@ -63,7 +58,7 @@ angular
 						$rootScope.isLoading = false;
 					}, 1000);
 					alert("Data berhasil dihapus.");
-					
+
 					$state.go('master_supplier');
 					$scope.refreshSupplier();
 					}, function errorCallback(response) {
@@ -75,13 +70,12 @@ angular
 			}
 		};
 		$scope.refreshSupplier();
-		
+
 	}])
 	.controller('SupplierDetailCtrl', ['$timeout','$rootScope','$scope', '$http','$state','SupplierService', function ($timeout,$rootScope,$scope,$http,$state,SupplierService) {
 		var page = 1;
 		$rootScope.isLoading = true;
 		$scope.postData = {};
-
 		$http.get(base_url+"api/"+api_key+"/suppliers/"+SupplierService.Supplier_id+"/"+page)
 		.then(function(response) {
 			$timeout( function(){
@@ -103,7 +97,7 @@ angular
 					address:$scope.postData.address,
                     remarks:$scope.postData.remarks,
 					isactive:1
-    
+
 				},
 				transformRequest: function(obj) {
 					var str = [];
@@ -126,13 +120,9 @@ angular
 		        alert("Terjadi Kesalahan, Ulangi ");
 			  });
 		}
-
 	}])
 	.controller('SupplierAddCtrl', ['$timeout','$rootScope','$scope', '$http','$state','SupplierService', function ($timeout,$rootScope,$scope,$http,$state,SupplierService) {
 		$scope.postData = {};
-		//$rootScope.isLoading = true;
-		//load merk dropdown
-		
 		$scope.submitSupplier = function (){
 			$rootScope.isLoading = true;
 

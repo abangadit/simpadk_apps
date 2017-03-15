@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:8889
--- Generation Time: Feb 17, 2017 at 09:12 AM
+-- Generation Time: Mar 15, 2017 at 10:04 AM
 -- Server version: 5.5.42
 -- PHP Version: 5.6.7
 
@@ -11,7 +11,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Database: `simpadk`
+-- Database: `simpadk1`
 --
 
 DELIMITER $$
@@ -49,9 +49,9 @@ BEGIN
 
 CREATE TABLE IF NOT EXISTS temp AS
 (SELECT *, CASE WHEN restock_id is not null then 0-`value` else `value` end as absolutevalue
-FROM simpadk.cashflow WHERE cashflow_date BETWEEN datefrom AND dateto);
+FROM simpadk1.cashflow WHERE cashflow_date BETWEEN CONCAT_WS(' ',DATE(datefrom),'00:00:00') AND CONCAT_WS(' ',DATE(dateto),'23:59:59'));
 
-SELECT *,(select sum(absolutevalue) FROM temp) as Balance FROM temp;
+SELECT cashflow_id,DATE_FORMAT(`cashflow_date`, '%d/%m/%Y %H:%i:%s'),order_id,restock_id,FORMAT(`value`,0) as value,remarks,FORMAT(absolutevalue,0) as absolutevalue,(select FORMAT(sum(absolutevalue),0) FROM temp) as Balance FROM temp;
 
 DROP TABLE temp;
 
@@ -229,7 +229,7 @@ else
 end if;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ds_getgraphic`(IN `_type` INT(10), IN `pointdate` DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ds_getgraphic`(IN `_type` nvarchar(20), IN `pointdate` DATETIME)
 BEGIN
 
 if _type='month' then
@@ -289,7 +289,7 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_fk_reportfakturcustomer`(order_id INT)
 BEGIN
-SELECT order_date
+SELECT DATE_FORMAT(order_date, '%Y/%m/%d %H:%i:%s')
 ,o.order_id
 ,cs.name
 ,cs.address
@@ -437,7 +437,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_od_reportorder`(date_from DATETI
 BEGIN
 
 SET date_to = CONCAT(DATE_FORMAT(date_to, '%Y-%m-%d'), ' 23:59:59');
-SELECT order_date
+CREATE TABLE IF NOT EXISTS temp AS
+(SELECT order_date
 ,o.order_id
 ,cs.name
 ,mr.merk_nama
@@ -456,7 +457,25 @@ INNER JOIN `product` as pr ON pr.product_id=oi.product_id
 INNER JOIN `merk` as mr ON mr.merk_id=pr.merk_id
 INNER JOIN `satuan` as st ON st.satuan_id=pr.satuan_id
 WHERE o.order_date BETWEEN date_from AND date_to
-AND (customer_id=o.customer_id OR customer_id=0 OR customer_id IS NULL);
+AND (customer_id=o.customer_id OR customer_id=0 OR customer_id IS NULL)
+);
+
+SELECT
+DATE_FORMAT(order_date, '%d/%m/%Y %H:%i:%s') as order_date
+,main.order_id
+,main.name
+,main.merk_nama
+,main.product_nama
+,FORMAT(main.customer_price, 0) as customer_price
+,FORMAT(main.quantity,0) as quantity
+,FORMAT(main.subtotal, 0) as grand_total
+,main.payment
+,DATE_FORMAT(due_date , '%d/%m/%Y') as due_date
+,totalquantity
+,totalgrand_total
+ FROM temp as main,
+(SELECT  FORMAT(SUM(quantity),0) as totalquantity, FORMAT(SUM(subtotal),0) as totalgrand_total FROM temp) as total;
+DROP TABLE temp;
 
 END$$
 
@@ -492,7 +511,7 @@ if order_id=0 then
     `due_date`,
     `iscredit`)
 	VALUES
-	(order_date,
+	(NOW(),
 	user_id,
 	customer_id,
 	total,
@@ -506,7 +525,7 @@ if order_id=0 then
 
 	SET new_id = LAST_INSERT_ID();
 	IF iscredit=1 THEN
-		INSERT INTO `simpadk`.`piutang`
+		INSERT INTO `simpadk1`.`piutang`
 		(`piutang_date`,
 		`customer_id`,
 		`order_id`,
@@ -515,7 +534,7 @@ if order_id=0 then
 		`balance`,
 		`due_date`)
 		VALUES
-		(order_date,
+		(NOW(),
 		customer_id,
 		new_id,
 		grand_total,
@@ -530,7 +549,7 @@ if order_id=0 then
 		`value`,
 		`remarks`)
 		VALUES
-		(order_date,
+		(NOW(),
 		new_id,
 		NULL,
 		grand_total,
@@ -745,12 +764,7 @@ FROM `order_item` oi
 end if;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_pi_bayarpiutang`(IN bayar_date DATETIME,
-IN `order_id` INT,
-IN `value_bayar` INT,
-IN `remarks` TEXT
-
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_pi_bayarpiutang`(IN `bayar_date` DATETIME, IN `order_id` INT, IN `value_bayar` INT, IN `remarks` TEXT)
 BEGIN
 	INSERT INTO `cashflow`
 (`cashflow_date`,
@@ -758,17 +772,12 @@ BEGIN
 `value`,
 `remarks`)
 VALUES
-(bayar_date,
+(NOW(),
 order_id,
 value_bayar,
 remarks);
 
-UPDATE `piutang` as t1,
-		(SELECT paid,`value` FROM piutang WHERE `order_id`=order_id) as t2
-		SET
-		t1.`paid` = t2.paid+value_bayar,
-		t1.`balance` = t2.`value`-t2.paid-value_bayar
-		WHERE t1.`order_id` = order_id;
+UPDATE piutang AS t1 SET t1.`paid` = t1.paid+value_bayar, t1.`balance` = t1.`value`-t1.paid WHERE t1.`order_id` = order_id;
 
 select 'successfully insert record' as result;
 END$$
@@ -800,8 +809,21 @@ CREATE TABLE IF NOT EXISTS temp AS
     WHERE (pi.`piutang_date`BETWEEN date_from AND date_to)
     AND (pi.`customer_id` =customer_id OR customer_id=0 OR customer_id IS NULL)
 );
-SELECT * FROM temp as main,
-(SELECT  SUM(`value`) as totalvalue, SUM(paid) as totalpaid , SUM(paid) as totalbalance FROM temp) as total;
+SELECT
+DATE_FORMAT(main.`piutang_date`, '%d/%m/%Y %H:%i:%s') as `piutang_date`,
+    main.`customer_id`,
+    main.name,
+    main.`order_id`,
+    FORMAT(main.`value`,0) as `value`,
+    FORMAT(main.`paid`,0) as paid,
+	  FORMAT(main.`balance`,0) as balance,
+	  DATE_FORMAT(main.`due_date`, '%d/%m/%Y') as due_date,
+      totalvalue,
+      totalpaid,
+      totalbalance
+
+ FROM temp as main,
+(SELECT  FORMAT(SUM(`value`),0) as totalvalue, FORMAT(SUM(paid),0) as totalpaid , FORMAT(SUM(balance),0) as totalbalance FROM temp) as total;
 DROP TABLE temp;
 
 END$$
@@ -811,7 +833,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_pi_savepiutang`(IN `piutang_id` 
 BEGIN
 if piutang_id=0 then
 
-	INSERT INTO `simpadk`.`piutang`
+	INSERT INTO `simpadk1`.`piutang`
 (`piutang_id`,
 `piutang_date`,
 `customer_id`,
@@ -919,7 +941,7 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_pr_reportstock`()
 BEGIN
-	SELECT NOW() as pertoday ,merk_nama,product_nama,stock FROM product a
+	SELECT DATE_FORMAT(NOW(), '%d/%m/%Y %H:%i:%s') as pertoday ,merk_nama,product_nama,FORMAT(stock,0) as stock FROM product a
 	INNER JOIN merk b ON a.merk_id=b.merk_id
 	ORDER BY merk_nama,product_nama;
 END$$
@@ -1168,6 +1190,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_rs_reportrestock`(date_from DATE
 BEGIN
 
 SET date_to = CONCAT(DATE_FORMAT(date_to, '%Y-%m-%d'), ' 23:59:59');
+CREATE TABLE IF NOT EXISTS temp AS
+(
 SELECT restock_date
 ,o.restock_id
 ,cs.name
@@ -1187,7 +1211,25 @@ INNER JOIN `product` as pr ON pr.product_id=oi.product_id
 INNER JOIN `merk` as mr ON mr.merk_id=pr.merk_id
 INNER JOIN `satuan` as st ON st.satuan_id=pr.satuan_id
 WHERE o.restock_date BETWEEN date_from AND date_to
-AND (supplier_id=o.supplier_id OR supplier_id=0 OR supplier_id IS NULL);
+AND (supplier_id=o.supplier_id OR supplier_id=0 OR supplier_id IS NULL)
+);
+
+SELECT
+DATE_FORMAT(restock_date, '%d/%m/%Y %H:%i:%s') as restock_date
+,main.restock_id
+,main.name
+,main.merk_nama
+,main.product_nama
+,FORMAT(main.supplier_price,0) as supplier_price
+,FORMAT(main.quantity,0) as quantity
+,FORMAT(main.grand_total,0) as grand_total
+,main.payment
+,DATE_FORMAT(due_date , '%d/%m/%Y') as due_date
+,totalquantity
+,totalgrand_total
+ FROM temp as main,
+(SELECT  FORMAT(SUM(quantity),0) as totalquantity, FORMAT(SUM(grand_total),0) as totalgrand_total FROM temp) as total;
+DROP TABLE temp;
 
 END$$
 
@@ -1217,7 +1259,7 @@ if restock_id=0 then
     `due_date`,
     `isdebt`)
 	VALUES
-	(restock_date,
+	(NOW(),
 	user_id,
 	supplier_id,
 	total,
@@ -1228,7 +1270,7 @@ if restock_id=0 then
 
 	SET new_id = LAST_INSERT_ID();
 	IF isdebt=1 THEN
-		INSERT INTO `simpadk`.`utang`
+		INSERT INTO `simpadk1`.`utang`
 		(`utang_date`,
 		`supplier_id`,
 		`restock_id`,
@@ -1237,7 +1279,7 @@ if restock_id=0 then
 		`balance`,
 		`due_date`)
 		VALUES
-		(restock_date,
+		(NOW(),
 		supplier_id,
 		new_id,
 		grand_total,
@@ -1251,7 +1293,7 @@ if restock_id=0 then
 		`value`,
 		`remarks`)
 		VALUES
-		(restock_date,
+		(NOW(),
 		new_id,
 		grand_total,
 		remarks);
@@ -1262,7 +1304,7 @@ else
 
 	UPDATE `restock`
 	SET
-	`restock_date` = restock_date,
+	`restock_date` = NOW(),
 	`user_id` = user_id,
 	`supplier_id` = supplier_id,
 	`total` = total,
@@ -1644,7 +1686,7 @@ BEGIN
 `value`,
 `remarks`)
 VALUES
-(bayar_date,
+(NOW(),
 restock_id,
 value_bayar,
 remarks);
@@ -1670,7 +1712,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ut_reportutang`(date_from DATETI
 BEGIN
 SET date_to = CONCAT(DATE_FORMAT(date_to, '%Y-%m-%d'), ' 23:59:59');
 CREATE TABLE IF NOT EXISTS temp AS
-(SELECT pi.`utang_id`,
+(SELECT
+pi.`utang_id`,
     pi.`utang_date`,
     pi.`supplier_id`,
     cs.name,
@@ -1685,8 +1728,21 @@ CREATE TABLE IF NOT EXISTS temp AS
     WHERE (pi.`utang_date`BETWEEN date_from AND date_to)
     AND (pi.`supplier_id` =supplier_id OR supplier_id=0 OR supplier_id IS NULL)
 );
-SELECT * FROM temp as main,
-(SELECT  SUM(`value`) as totalvalue, SUM(paid) as totalpaid , SUM(paid) as totalbalance FROM temp) as total;
+SELECT
+utang_id,
+    DATE_FORMAT(`utang_date`, '%d/%m/%Y %H:%i:%s') as utang_date,
+    supplier_id,
+    name,
+    restock_id,
+    FORMAT(`value`,0) as value,
+    FORMAT(`paid`,0) as paid,
+	  FORMAT(`balance`,0) as balance,
+	  DATE_FORMAT(`due_date`, '%d/%m/%Y %H:%i:%s') as due_date,
+	totalvalue,
+    totalpaid,
+    totalbalance
+ FROM temp as main,
+(SELECT  FORMAT(SUM(`value`),0) as totalvalue, FORMAT(SUM(paid),0) as totalpaid , FORMAT(SUM(balance),0) as totalbalance FROM temp) as total;
 DROP TABLE temp;
 END$$
 
@@ -1766,9 +1822,9 @@ CREATE TABLE `apikey` (
 
 INSERT INTO `apikey` (`user_id`, `apikey`, `user_level`, `expired_date`) VALUES
 (1, 'c89ba5b91d1ed6642892fea04314bd2a7c12893a', 1, '2017-02-17 16:48:24'),
-(8, 'd19ea5b21a19dd226ac2bdfe0417be2a72158438e23573f3663a', 1, '2017-02-17 17:11:10'),
-(11, 'db9bbbb206429e672f92fca04210b92a7110', 2, '2017-02-17 17:11:18'),
-(12, 'dd9bbab01104c7387f91f9a04114bb2a70158031ef39', 3, '2017-02-17 17:11:30');
+(11, 'db9bbbb206429e672f92fca04210b92a7110', 2, '2017-03-10 19:36:10'),
+(12, 'dd9bbab01104c7387f91f9a04114bb2a70158031ef39', 3, '2017-03-08 09:49:52'),
+(8, 'd19ea5b21a19dd226ac2bdfe0417be2a72168538e03275ff643b', 1, '2017-03-10 21:23:46');
 
 -- --------------------------------------------------------
 
@@ -1783,55 +1839,40 @@ CREATE TABLE `cashflow` (
   `restock_id` int(11) DEFAULT NULL,
   `value` int(11) NOT NULL,
   `remarks` text
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `cashflow`
 --
 
 INSERT INTO `cashflow` (`cashflow_id`, `cashflow_date`, `order_id`, `restock_id`, `value`, `remarks`) VALUES
-(1, '2016-12-17 01:00:21', NULL, 2, 2000000, NULL),
-(3, '2016-12-19 00:00:00', NULL, 1, 500000, 'BESOK SISANYA'),
-(4, '2016-12-19 00:00:00', NULL, 1, 500000, 'BESOK SISANYA'),
-(5, '2016-12-19 00:00:00', NULL, 1, 500000, 'BESOK SISANYA'),
-(6, '2016-12-19 00:00:00', NULL, 1, 500000, 'BESOK SISANYA'),
-(7, '2016-12-14 00:00:00', 26, NULL, 35000, 'ok'),
-(8, '2016-12-14 00:00:00', 26, NULL, 35000, 'ok'),
-(9, '2016-12-16 00:00:00', 27, NULL, 1000000, 'ok'),
-(10, '2016-12-17 00:00:00', NULL, 2, 1000, 'asd'),
-(11, '2016-12-17 00:00:00', NULL, 2, 1000, 'asd'),
-(12, '2016-12-17 00:00:00', 29, NULL, 1000, 'asd'),
-(13, '2016-12-24 00:00:00', 26, NULL, 5000, ''),
-(14, '2016-12-24 00:00:00', 26, NULL, 20000, ''),
-(15, '2016-12-24 00:00:00', 26, NULL, 40000, ''),
-(16, '2016-12-24 00:00:00', 26, NULL, 940000, ''),
-(17, '2016-12-24 00:00:00', 28, NULL, 20000, ''),
-(18, '2016-12-24 00:00:00', 29, NULL, 4000, ''),
-(19, '2016-12-24 00:00:00', 29, NULL, 6000, ''),
-(20, '2016-12-24 00:00:00', 26, NULL, 100000, ''),
-(21, '2016-12-24 00:00:00', 26, NULL, 200000, ''),
-(22, '2016-12-24 00:00:00', 26, NULL, 100000, ''),
-(23, '2016-12-24 00:00:00', 26, NULL, 100000, ''),
-(24, '2016-12-24 00:00:00', 26, NULL, 300000, ''),
-(25, '2016-12-24 00:00:00', 26, NULL, 500000, ''),
-(26, '2016-12-24 00:00:00', 29, NULL, 994000, ''),
-(27, '2016-12-24 00:00:00', 1, NULL, 500000, ''),
-(28, '2016-12-24 00:00:00', 3, NULL, 10000, ''),
-(29, '2016-12-24 00:00:00', 3, NULL, 10000, ''),
-(30, '2016-12-24 00:00:00', 3, NULL, 10000, ''),
-(31, '2016-12-24 00:00:00', NULL, 3, 6500, ''),
-(32, '2016-12-24 00:00:00', NULL, 3, 193500, ''),
-(33, '2016-12-24 00:00:00', NULL, 1, 20000, ''),
-(34, '2016-12-24 00:00:00', NULL, 1, 10000, ''),
-(35, '2016-12-24 00:00:00', NULL, 1, 10000, ''),
-(36, '2016-12-24 00:00:00', NULL, 1, 10000, ''),
-(37, '2016-12-24 00:00:00', NULL, 1, 10000, ''),
-(38, '2016-12-24 00:00:00', NULL, 1, 10000, ''),
-(39, '2016-12-24 00:00:00', NULL, 1, 1000, ''),
-(40, '2016-12-24 00:00:00', NULL, 1, 10000, ''),
-(41, '2017-01-06 00:00:00', NULL, 1, 419000, ''),
-(42, '2017-01-07 00:00:00', 30, NULL, 90000, ''),
-(43, '2017-02-25 00:00:00', 2, NULL, 1500000, '');
+(1, '2017-03-05 15:26:52', 1, NULL, 450000, ''),
+(2, '2017-03-05 15:29:45', NULL, 1, 750000, 'byr utang'),
+(3, '2017-03-05 15:33:23', NULL, 2, 420000, 'byr utang'),
+(4, '2017-03-07 15:31:37', 3, NULL, 99000, ''),
+(5, '2017-03-07 15:32:57', 4, NULL, 120000, ''),
+(6, '2017-03-08 07:36:10', 5, NULL, 340000, ''),
+(7, '2017-03-08 07:37:51', NULL, 3, 600000, NULL),
+(8, '2017-03-08 07:38:58', 2, NULL, 100000, 'bu joko bayar utang'),
+(9, '2017-03-08 07:41:47', NULL, 5, 2800000, NULL),
+(10, '2017-03-09 16:22:17', 6, NULL, 260000, ''),
+(11, '2017-03-10 16:35:22', 7, NULL, 150000, ''),
+(12, '2017-03-10 16:36:16', 8, NULL, 500000, 'undefined'),
+(13, '2017-03-10 16:36:38', 8, NULL, 100000, 'undefined'),
+(14, '2017-03-10 16:37:25', NULL, 6, 500000, 'undefined'),
+(15, '2017-03-10 16:37:50', 8, NULL, 900000, 'undefined'),
+(16, '2017-03-10 16:38:13', NULL, 7, 3000000, NULL),
+(17, '2017-03-10 16:39:18', NULL, 8, 1500000, NULL),
+(18, '2017-03-10 16:51:22', 9, NULL, 400000, 'cicil'),
+(19, '2017-03-10 16:54:28', 9, NULL, 10000, 'undefined'),
+(20, '2017-03-10 16:55:45', 9, NULL, 10000, '10000'),
+(21, '2017-03-10 17:01:22', 9, NULL, 10000, '10000'),
+(22, '2017-03-10 17:15:40', 10, NULL, 200000, 'bayar'),
+(23, '2017-03-10 17:16:23', 10, NULL, 200000, 'bayar'),
+(24, '2017-03-10 17:16:38', 10, NULL, 300000, 'bayar'),
+(25, '2017-03-10 17:17:46', 10, NULL, 100000, 'lunasin aja deh'),
+(26, '2017-03-10 17:18:09', 11, NULL, 1120000, ''),
+(27, '2017-03-10 17:18:52', 12, NULL, 600000, 'setangah dulu');
 
 -- --------------------------------------------------------
 
@@ -1991,25 +2032,30 @@ CREATE TABLE `order` (
   `total` float NOT NULL,
   `discount` float NOT NULL,
   `grand_total` float NOT NULL,
-  `delivery_date` datetime NOT NULL,
-  `isdelivered` bit(1) NOT NULL,
-  `remarks` text NOT NULL,
+  `delivery_date` datetime DEFAULT NULL,
+  `isdelivered` bit(1) DEFAULT NULL,
+  `remarks` text,
   `iscredit` bit(1) DEFAULT NULL,
   `due_date` datetime DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `order`
 --
 
 INSERT INTO `order` (`order_id`, `order_date`, `user_id`, `customer_id`, `total`, `discount`, `grand_total`, `delivery_date`, `isdelivered`, `remarks`, `iscredit`, `due_date`) VALUES
-(1, '2017-01-07 00:00:00', 1, 0, 165000, 0, 165000, '0000-00-00 00:00:00', b'0', '', b'1', '0000-00-00 00:00:00'),
-(2, '2017-01-07 00:00:00', 1, 1, 1500000, 0, 1500000, '0000-00-00 00:00:00', b'0', '', b'1', '2017-01-31 00:00:00'),
-(3, '2017-01-07 00:00:00', 1, 3, 3000000, 0, 3000000, '0000-00-00 00:00:00', b'0', '', b'1', '2017-01-31 00:00:00'),
-(4, '2017-01-07 00:00:00', 1, 7, 560000, 0, 560000, '0000-00-00 00:00:00', b'0', '', b'1', '2017-01-31 00:00:00'),
-(5, '2017-01-07 00:00:00', 1, 1, 336000, 0, 336000, '0000-00-00 00:00:00', b'0', '', b'1', '2017-01-11 00:00:00'),
-(6, '2017-01-21 00:00:00', 1, 0, 15000, 0, 15000, '0000-00-00 00:00:00', b'0', '', b'1', '0000-00-00 00:00:00'),
-(7, '2017-01-21 00:00:00', 1, 0, 60000, 0, 60000, '0000-00-00 00:00:00', b'0', '', b'1', '0000-00-00 00:00:00');
+(1, '2017-03-05 15:26:52', 8, 4, 450000, 0, 450000, '0000-00-00 00:00:00', b'0', '', b'0', '0000-00-00 00:00:00'),
+(2, '2017-03-05 15:34:02', 8, 7, 1110000, 0, 1110000, '0000-00-00 00:00:00', b'0', '', b'1', '2017-03-22 00:00:00'),
+(3, '2017-03-07 15:31:37', 8, 0, 99000, 0, 99000, '0000-00-00 00:00:00', b'0', '', b'0', '0000-00-00 00:00:00'),
+(4, '2017-03-07 15:32:57', 8, 1, 120000, 0, 120000, '0000-00-00 00:00:00', b'0', '', b'0', '0000-00-00 00:00:00'),
+(5, '2017-03-08 07:36:10', 8, 0, 340000, 0, 340000, '0000-00-00 00:00:00', b'0', '', b'0', '0000-00-00 00:00:00'),
+(6, '2017-03-09 16:22:17', 8, 0, 260000, 0, 260000, '0000-00-00 00:00:00', b'0', '', b'0', '0000-00-00 00:00:00'),
+(7, '2017-03-10 16:35:22', 8, 0, 150000, 0, 150000, '0000-00-00 00:00:00', b'0', '', b'0', '0000-00-00 00:00:00'),
+(8, '2017-03-10 16:35:51', 8, 1, 1400000, 0, 1400000, '0000-00-00 00:00:00', b'0', '', b'1', '2017-03-16 00:00:00'),
+(9, '2017-03-10 16:51:04', 8, 3, 1200000, 0, 1200000, '0000-00-00 00:00:00', b'0', '', b'1', '2017-03-24 00:00:00'),
+(10, '2017-03-10 17:13:20', 8, 8, 900000, 0, 900000, '0000-00-00 00:00:00', b'0', '', b'1', '2017-03-24 00:00:00'),
+(11, '2017-03-10 17:18:09', 8, 9, 1120000, 0, 1120000, '0000-00-00 00:00:00', b'0', '', b'0', '0000-00-00 00:00:00'),
+(12, '2017-03-10 17:18:37', 8, 10, 1200000, 0, 1200000, '0000-00-00 00:00:00', b'0', '', b'1', '2017-03-10 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -2025,21 +2071,33 @@ CREATE TABLE `order_item` (
   `customer_price` float NOT NULL,
   `quantity` int(11) NOT NULL,
   `subtotal` float NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `order_item`
 --
 
 INSERT INTO `order_item` (`order_item_id`, `order_id`, `product_id`, `customer_price_id`, `customer_price`, `quantity`, `subtotal`) VALUES
-(1, 1, 1, 0, 45000, 3, 135000),
-(2, 1, 2, 0, 120000, 4, 480000),
-(3, 2, 1, 0, 1500000, 100, 150000000),
-(4, 3, 2, 0, 3000000, 100, 300000000),
-(5, 4, 3, 0, 560000, 20, 11200000),
-(6, 5, 3, 0, 336000, 12, 4032000),
-(7, 6, 1, 0, 15000, 1, 15000),
-(8, 7, 1, 0, 60000, 4, 240000);
+(1, 1, 6, 0, 15000, 20, 300000),
+(2, 1, 1, 0, 15000, 10, 150000),
+(3, 2, 5, 0, 27000, 30, 810000),
+(4, 2, 23, 0, 15000, 20, 300000),
+(5, 3, 1, 0, 15000, 1, 15000),
+(6, 3, 3, 0, 28000, 3, 84000),
+(7, 4, 2, 0, 30000, 4, 120000),
+(8, 5, 1, 0, 15000, 2, 30000),
+(9, 5, 2, 0, 30000, 3, 90000),
+(10, 5, 3, 0, 28000, 4, 112000),
+(11, 5, 5, 0, 27000, 4, 108000),
+(12, 6, 2, 0, 30000, 4, 120000),
+(13, 6, 3, 0, 28000, 5, 140000),
+(14, 7, 1, 0, 15000, 10, 150000),
+(15, 8, 3, 0, 28000, 50, 1400000),
+(16, 9, 2, 0, 30000, 40, 1200000),
+(17, 10, 1, 0, 15000, 20, 300000),
+(18, 10, 2, 0, 30000, 20, 600000),
+(19, 11, 18, 0, 28000, 40, 1120000),
+(20, 12, 2, 0, 30000, 40, 1200000);
 
 -- --------------------------------------------------------
 
@@ -2056,32 +2114,18 @@ CREATE TABLE `piutang` (
   `paid` int(11) DEFAULT NULL,
   `balance` int(11) DEFAULT NULL,
   `due_date` datetime DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `piutang`
 --
 
 INSERT INTO `piutang` (`piutang_id`, `piutang_date`, `customer_id`, `order_id`, `value`, `paid`, `balance`, `due_date`) VALUES
-(1, '2016-12-16 00:00:00', 1, 26, 1000000, 1000000, 0, '2016-12-19 00:00:00'),
-(2, '2016-12-17 12:32:01', 1, 28, 20000, 1060000, -60000, '2016-12-23 00:00:00'),
-(3, '2016-12-17 12:32:01', 1, 29, 20000, 1994000, -994000, '2016-12-23 00:00:00'),
-(4, '2017-00-06 00:00:00', 4, 30, 90000, 1090000, -90000, '2017-01-26 00:00:00'),
-(5, '2017-00-07 00:00:00', 0, 31, 525000, 0, 525000, '0000-00-00 00:00:00'),
-(6, '2017-00-07 00:00:00', 0, 32, 30000, 0, 30000, '0000-00-00 00:00:00'),
-(7, '2017-00-07 00:00:00', 0, 33, 15000, 0, 15000, '0000-00-00 00:00:00'),
-(8, '2017-00-07 00:00:00', 0, 34, 15000, 0, 15000, '0000-00-00 00:00:00'),
-(9, '2017-00-07 00:00:00', 0, 35, 30000, 0, 30000, '0000-00-00 00:00:00'),
-(10, '2017-00-07 00:00:00', 0, 36, 15000, 0, 15000, '0000-00-00 00:00:00'),
-(11, '2017-00-07 00:00:00', 0, 37, 15000, 0, 15000, '0000-00-00 00:00:00'),
-(12, '2017-01-07 00:00:00', 0, 38, 30000, 0, 30000, '0000-00-00 00:00:00'),
-(13, '2017-01-07 00:00:00', 0, 1, 165000, 0, 165000, '0000-00-00 00:00:00'),
-(14, '2017-01-07 00:00:00', 1, 2, 1500000, 2500000, -1500000, '2017-01-31 00:00:00'),
-(15, '2017-01-07 00:00:00', 3, 3, 3000000, 0, 3000000, '2017-01-31 00:00:00'),
-(16, '2017-01-07 00:00:00', 7, 4, 560000, 0, 560000, '2017-01-31 00:00:00'),
-(17, '2017-01-07 00:00:00', 1, 5, 336000, 0, 336000, '2017-01-11 00:00:00'),
-(18, '2017-01-21 00:00:00', 0, 6, 15000, 0, 15000, '0000-00-00 00:00:00'),
-(19, '2017-01-21 00:00:00', 0, 7, 60000, 0, 60000, '0000-00-00 00:00:00');
+(1, '2017-03-05 15:34:02', 7, 2, 1110000, 100000, 1010000, '2017-03-22 00:00:00'),
+(2, '2017-03-10 16:35:51', 1, 8, 1400000, 1000000, 110000, '2017-03-16 00:00:00'),
+(3, '2017-03-10 16:51:04', 3, 9, 1200000, 150000, 1050000, '2017-03-24 00:00:00'),
+(4, '2017-03-10 17:13:20', 8, 10, 900000, 900000, 0, '2017-03-24 00:00:00'),
+(5, '2017-03-10 17:18:37', 10, 12, 1200000, 600000, 600000, '2017-03-10 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -2107,18 +2151,14 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`product_id`, `merk_id`, `satuan_id`, `product_nama`, `default_price`, `remarks`, `isactive`, `stock`, `min_stock`, `supplier_price`) VALUES
-(1, 1, 1, 'Galon Club', 15000, 'Galon Club', b'1', 1919, 10, 12000),
-(2, 2, 2, 'Botol Pristine 400ml', 30000, 'Botol tutup hijau', b'1', 2, 15, 28000),
-(3, 1, 2, 'Botol Club 600ml', 28000, 'Botol tanggung', b'1', 968, 15, 25000),
-(5, 1, 2, 'Botol Club 330ml', 27000, 'Botol kecil', b'1', 50, 15, 24000),
-(6, 3, 2, 'Cup Summit 240ml', 15000, 'Gelas plastik', b'1', 0, 20, 12000),
-(7, 1, 2, 'Cup Club 240ml', 18000, 'Gelas plastik', b'1', 0, 20, 15000),
-(18, 1, 2, 'Botol Club 1500ml', 28000, 'Botol besar', b'1', 0, 10, 24000),
-(19, 2, 2, 'Pristine Cup 240ml', 15000, '-', b'0', 0, 10, 17000),
-(20, 1, 1, 'Galon Club', 15000, 'Galon Club', b'0', 50, 10, 12000),
-(21, 1, 1, 'Galon Club', 15000, 'Galon Club', b'0', 50, 10, 12000),
-(22, 1, 1, 'Galon Club', 15000, 'Galon Club', b'0', 50, 10, 12000),
-(23, 2, 1, 'Pristine Cup 240ml', 15000, 'cup hijaua', b'1', 10, 1, 18000);
+(1, 1, 1, 'Galon Club', 15000, 'Galon Club', b'1', 77, 10, 12000),
+(2, 2, 2, 'Botol Pristine 400ml', 30000, 'Botol tutup hijau', b'1', 34, 15, 28000),
+(3, 1, 2, 'Botol Club 600ml', 28000, 'Botol tanggung', b'1', 68, 15, 25000),
+(5, 1, 2, 'Botol Club 330ml', 27000, 'Botol kecil', b'1', 66, 15, 24000),
+(6, 3, 2, 'Cup Summit 240ml', 15000, 'Gelas plastik', b'1', 130, 20, 12000),
+(7, 1, 2, 'Cup Club 240ml', 18000, 'Gelas plastik', b'1', 100, 20, 15000),
+(18, 1, 2, 'Botol Club 1500ml', 28000, 'Botol besar', b'1', 60, 10, 24000),
+(23, 2, 1, 'Pristine Cup 240ml', 15000, 'cup hijaua', b'1', 180, 1, 18000);
 
 -- --------------------------------------------------------
 
@@ -2136,19 +2176,21 @@ CREATE TABLE `restock` (
   `grand_total` int(11) DEFAULT NULL,
   `isdebt` bit(1) DEFAULT NULL,
   `due_date` datetime DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `restock`
 --
 
 INSERT INTO `restock` (`restock_id`, `restock_date`, `user_id`, `supplier_id`, `total`, `discount`, `grand_total`, `isdebt`, `due_date`) VALUES
-(1, '2016-12-18 00:00:00', 1, 1, 200000, 0, 200000, b'1', '2016-12-22 00:00:00'),
-(2, '2016-12-18 00:00:00', 1, 1, 200000, 0, 200000, b'1', '2016-12-22 00:00:00'),
-(3, '2016-11-24 00:00:00', 1, 1, 15000000, 0, 15000000, b'1', '2016-12-24 00:00:00'),
-(4, '2016-11-24 00:00:00', 1, 1, 15000000, 0, 15000000, b'1', '2016-12-24 00:00:00'),
-(5, '2017-00-06 00:00:00', 1, 1, 28000000, 0, 28000000, b'1', '0000-00-00 00:00:00'),
-(6, '2017-00-21 00:00:00', 1, 3, 600000, 0, 600000, b'1', '0000-00-00 00:00:00');
+(1, '2017-03-05 15:25:55', 8, 2, 750000, 0, 750000, b'1', '2017-03-30 00:00:00'),
+(2, '2017-03-05 15:26:22', 8, 3, 420000, 0, 420000, b'1', '2017-03-30 00:00:00'),
+(3, '2017-03-08 07:37:51', 8, 1, 600000, 0, 600000, b'0', '0000-00-00 00:00:00'),
+(4, '2017-03-08 07:39:38', 8, 1, 2800000, 0, 2800000, b'1', '2017-03-30 00:00:00'),
+(5, '2017-03-08 07:41:47', 8, 1, 2800000, 0, 2800000, b'0', '0000-00-00 00:00:00'),
+(6, '2017-03-08 07:42:05', 8, 2, 1500000, 0, 1500000, b'1', '2017-03-30 00:00:00'),
+(7, '2017-03-10 16:38:13', 8, 3, 3000000, 0, 3000000, b'0', '0000-00-00 00:00:00'),
+(8, '2017-03-10 16:39:18', 8, 3, 1500000, 0, 1500000, b'0', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -2163,20 +2205,21 @@ CREATE TABLE `restock_item` (
   `price` float NOT NULL,
   `quantity` int(11) NOT NULL,
   `subtotal` float NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `restock_item`
 --
 
 INSERT INTO `restock_item` (`restock_item_id`, `restock_id`, `product_id`, `price`, `quantity`, `subtotal`) VALUES
-(1, 1, 1, 12000, 50, 600000),
-(2, 1, 5, 30000, 50, 15000000),
-(3, 2, 2, 28000, 100, 2800000),
-(4, 3, 1, 15000000, 1000, 15000000000),
-(5, 4, 1, 15000000, 1000, 15000000000),
-(6, 5, 3, 28000000, 1000, 28000000000),
-(7, 6, 2, 600000, 20, 12000000);
+(1, 1, 6, 15000, 50, 750000),
+(2, 2, 2, 30000, 14, 420000),
+(3, 3, 1, 15000, 10, 150000),
+(4, 3, 2, 30000, 15, 450000),
+(5, 5, 3, 28000, 100, 2800000),
+(6, 6, 6, 15000, 100, 1500000),
+(7, 7, 2, 30000, 100, 3000000),
+(8, 8, 23, 15000, 100, 1500000);
 
 -- --------------------------------------------------------
 
@@ -2228,10 +2271,10 @@ INSERT INTO `supplier` (`supplier_id`, `name`, `address`, `phone_no`, `remarks`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tempSales`
+-- Table structure for table `tempsales`
 --
 
-CREATE TABLE `tempSales` (
+CREATE TABLE `tempsales` (
   `order_date` datetime DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -2274,19 +2317,16 @@ CREATE TABLE `utang` (
   `paid` int(11) DEFAULT NULL,
   `balance` int(11) DEFAULT NULL,
   `due_date` datetime DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `utang`
 --
 
 INSERT INTO `utang` (`utang_id`, `utang_date`, `supplier_id`, `restock_id`, `value`, `paid`, `balance`, `due_date`) VALUES
-(1, '2016-12-16 01:00:21', 1, 1, 1000000, 1000000, 0, '2016-12-28 00:00:00'),
-(2, '2016-12-18 00:00:00', 1, 3, 200000, 200000, 0, '2016-12-22 00:00:00'),
-(3, '2016-11-24 00:00:00', 1, 3, 15000000, 200000, 0, '2016-12-24 00:00:00'),
-(4, '2016-11-24 00:00:00', 1, 4, 15000000, 0, 15000000, '2016-12-24 00:00:00'),
-(5, '2017-00-06 00:00:00', 1, 5, 28000000, 0, 28000000, '0000-00-00 00:00:00'),
-(6, '2017-00-21 00:00:00', 3, 6, 600000, 0, 600000, '0000-00-00 00:00:00');
+(1, '2017-03-05 15:25:55', 2, 1, 750000, 750000, 0, '2017-03-30 00:00:00'),
+(2, '2017-03-05 15:26:22', 3, 2, 420000, 420000, 0, '2017-03-30 00:00:00'),
+(3, '2017-03-08 07:42:05', 2, 6, 1500000, 500000, 1000000, '2017-03-30 00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -2384,7 +2424,7 @@ ALTER TABLE `utang`
 -- AUTO_INCREMENT for table `cashflow`
 --
 ALTER TABLE `cashflow`
-  MODIFY `cashflow_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=44;
+  MODIFY `cashflow_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT for table `customer`
 --
@@ -2404,17 +2444,17 @@ ALTER TABLE `merk`
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `order_item`
 --
 ALTER TABLE `order_item`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT for table `piutang`
 --
 ALTER TABLE `piutang`
-  MODIFY `piutang_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=20;
+  MODIFY `piutang_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `product`
 --
@@ -2424,12 +2464,12 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `restock`
 --
 ALTER TABLE `restock`
-  MODIFY `restock_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+  MODIFY `restock_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `restock_item`
 --
 ALTER TABLE `restock_item`
-  MODIFY `restock_item_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+  MODIFY `restock_item_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `satuan`
 --
@@ -2449,4 +2489,4 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `utang`
 --
 ALTER TABLE `utang`
-  MODIFY `utang_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+  MODIFY `utang_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
