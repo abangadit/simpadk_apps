@@ -48,6 +48,18 @@
         $scope.cart = cartService.getForm();
         $scope.total = 0;
       }
+      //delete cart item
+      $scope.deleteItem = function(index){
+        console.log("deleteItem");
+        cartService.deleteForm(index);
+
+
+        $scope.cart = cartService.getForm();
+        $scope.total = 0;
+        for (var i = 0; i < $scope.cart.length; i++) {
+          $scope.total += $scope.cart[i].price;
+        }
+      }
       //tampilkan popup order
   		$scope.order_popup = function(size,id,name,price){
         if($rootScope.supplier_id>0){

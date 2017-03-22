@@ -31,7 +31,7 @@
                   <div class="col-md-12">
                     <div class="col-md-10" style="border-bottom: 1px solid #dadada;padding:5px 0px;font-size:11px;color:#000;">{{item.name}} ( {{item.qty}} ) {{item.price | currency:"Rp.":0}}
                     </div>
-                    <div class="col-md-2" style="font-size:14px;color:#ff0000;">x</div>
+                    <div class="col-md-2" style="font-size:14px;color:#ff0000;" ng-click="deleteItem($index)">x</div>
                   </div>
                 </div>
             </div>

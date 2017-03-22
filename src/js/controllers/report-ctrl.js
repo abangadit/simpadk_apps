@@ -16,8 +16,9 @@ angular.module('RDash').service('ReportService', function () {})
         var printContents = document.getElementById("print_report").innerHTML;
         var popupWin = window.open('', '_blank', 'width=500,height=500');
         popupWin.document.open();
-        popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" />');
-        popupWin.document.write('<style>table{width:100%;}td,th{border:1px solid #000;text-align:center;padding:4px;}</style>');
+        //popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" />');
+				popupWin.document.write('<html><head>');
+        popupWin.document.write('<style>table{width:100%;}td,th{border:1px solid #000;text-align:center;padding:4px;}table{border-collapse: collapse;}</style>');
         popupWin.document.write('</head><body onload="window.print()">' + printContents + '</body></html>');
         popupWin.document.close();
       }
